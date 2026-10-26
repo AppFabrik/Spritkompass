@@ -37,7 +37,6 @@
 .logo-bft{background:#ff7616;color:#101010;font-size:16px;font-style:italic}
 .logo-hoyer{background:#00539f;color:#ffed00;font-size:15px}
 .logo-m1{background:#222;color:#ffcc00;font-size:18px}
-
 .fav-badge{position:absolute;top:2px;right:2px;font-size:13px;background:#fff;border-radius:50%;width:18px;height:18px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
 
 .stationmain{min-width:0}.stationname{font:700 16px/1.2 'Barlow Condensed',sans-serif;margin:0 0 2px;color:var(--navy)}
@@ -89,14 +88,18 @@
 .navitem svg{width:27px;height:27px;fill:currentColor}
 .navitem.active{color:var(--yellow)}
 
-/* Modal */
+/* Modal / Detail-Dialog */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;display:none;align-items:center;justify-content:center}
 .modal-backdrop.show{display:flex}
-.modal{background:#fff;padding:24px;border-radius:20px;width:90%;max-width:420px;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
-.modal h3{margin-top:0;font-family:'Barlow Condensed',sans-serif;font-size:24px}
+.modal{background:#fff;padding:24px;border-radius:20px;width:90%;max-width:440px;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
+.modal h3{margin-top:0;font-family:'Barlow Condensed',sans-serif;font-size:24px;display:flex;justify-content:space-between;align-items:center}
 .modal label{display:block;font-weight:700;margin:14px 0 6px;font-size:14px}
 .modal select,.modal input{width:100%;padding:10px;border:1px solid #d5e5f5;border-radius:10px;font-size:14px;background:#f5fbff}
 .modal-close{margin-top:20px;width:100%;background:var(--navy);color:#fff;border:0;padding:12px;border-radius:99px;font:800 16px 'Barlow Condensed',sans-serif;cursor:pointer}
+.detail-prices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.detail-price-box{background:#f0f6fc;border-radius:12px;padding:10px;text-align:center}
+.detail-price-box small{display:block;color:var(--muted);font-weight:700;font-size:11px}
+.detail-price-box span{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--green)}
 
 .empty{padding:28px;text-align:center;color:var(--muted)}.toast{position:fixed;z-index:4000;left:50%;bottom:92px;transform:translateX(-50%);max-width:90vw;padding:12px 18px;border-radius:12px;background:#103d70;color:#fff;box-shadow:var(--shadow);display:none;font-size:13px}.toast.show{display:block}
 
@@ -194,6 +197,13 @@
   </div>
 </div>
 
+<!-- Tankstellen-Detail Modal -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal" id="detailModalContent">
+    <!-- Wird dynamisch gefüllt -->
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
@@ -205,7 +215,6 @@ const $=id=>document.getElementById(id);
 let fuel='diesel', origin={lat:51.7927,lon:10.9564,label:'Blankenburg (Harz)'}, selected=null, map, layer, markers=[], currentStations=[];
 let showOnlyFavorites = false;
 
-// Einstellungen aus LocalStorage laden
 let appSettings = {
   maxListItems: parseInt(localStorage.getItem('pfiffi_limit') || '5', 10),
   defaultFuel: localStorage.getItem('pfiffi_fuel') || 'diesel',
@@ -220,10 +229,8 @@ document.querySelectorAll('.fuel').forEach(b => {
   else b.classList.remove('active');
 });
 
-// Favoriten-Liste laden
 let favorites = JSON.parse(localStorage.getItem('pfiffi_favs') || '[]');
 
-// Preise exakt ohne "9" am Ende (kaufmännisch auf 2 Dezimalstellen gerundet)
 function fmt(n) {
   if(n == null || n === false || isNaN(n)) return '–';
   let rounded = Math.round(n * 100) / 100;
@@ -275,7 +282,6 @@ function getCorrectPlace(s){
 
 async function fetchTankerkoenigData(){
   let rad = $('radius').value;
-  // Cache-Buster (_t) angehängt, damit die Tankerkönig-API garantiert immer Live-Preise ohne Browser-Cache liefert
   let url = `https://creativecommons.tankerkoenig.de/json/list.php?lat=${origin.lat}&lng=${origin.lon}&rad=${rad}&sort=dist&type=all&apikey=${TANKER_KEY}&_t=${Date.now()}`;
   
   let resp = await fetch(url);
@@ -304,16 +310,62 @@ function processAndSortStations(stations){
   return sorted;
 }
 
-function selectStation(id, scrollToList = false){
-  selected = id;
-  render(false);
-  
-  if(scrollToList){
-    let el = document.querySelector(`.station[data-id="${id}"]`);
-    if(el){
-      el.scrollIntoView({behavior: 'smooth', block: 'center'});
+function showStationDetails(s) {
+  let isFav = favorites.includes(s.id);
+  let isReallyOpen = s.isOpen || (typeof s[fuel] === 'number' && s[fuel] > 0);
+  let correctedPlace = getCorrectPlace(s);
+
+  $('detailModalContent').innerHTML = `
+    <h3>${esc(s.brand || s.name)} 
+      <button class="favbtn" id="modalFavBtn" style="font-size:24px">${isFav ? '♥' : '♡'}</button>
+    </h3>
+    <p style="margin:4px 0 12px;color:var(--muted);font-size:13px">${esc(s.name)}</p>
+    
+    <div style="font-size:13px;margin-bottom:12px">
+      <strong>Adresse:</strong><br>${esc(s.street)} ${esc(s.houseNumber || '')}, ${esc(s.postCode)} ${esc(correctedPlace)}<br>
+      <strong>Entfernung:</strong> ${km(s.dist)}<br>
+      <strong>Status:</strong> <span style="color:${isReallyOpen ? 'var(--green)' : '#e30613'};font-weight:700">${isReallyOpen ? 'Geöffnet' : 'Geschlossen'}</span>
+    </div>
+
+    <div class="detail-prices">
+      <div class="detail-price-box">
+        <small>Diesel</small>
+        <span>${fmt(s.diesel)}</span>
+      </div>
+      <div class="detail-price-box">
+        <small>Super E5</small>
+        <span>${fmt(s.e5)}</span>
+      </div>
+      <div class="detail-price-box">
+        <small>Super E10</small>
+        <span>${fmt(s.e10)}</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener" 
+         class="routebtn" style="flex:1;text-decoration:none;padding:12px;justify-content:center">Route starten ➔</a>
+    </div>
+    <button class="modal-close" id="closeDetailModal">Schließen</button>
+  `;
+
+  $('detailModal').classList.add('show');
+
+  $('modalFavBtn').onclick = () => {
+    if(favorites.includes(s.id)){
+      favorites = favorites.filter(x => x !== s.id);
+      $('modalFavBtn').textContent = '♡';
+      toast('Aus Favoriten entfernt.');
+    } else {
+      favorites.push(s.id);
+      $('modalFavBtn').textContent = '♥';
+      toast('Zu Favoriten hinzugefügt.');
     }
-  }
+    localStorage.setItem('pfiffi_favs', JSON.stringify(favorites));
+    render(false);
+  };
+
+  $('closeDetailModal').onclick = () => $('detailModal').classList.remove('show');
 }
 
 function render(updateMap = true){
@@ -358,20 +410,17 @@ function render(updateMap = true){
       </article>`;
   }).join('') : `<div class="empty">${showOnlyFavorites ? 'Keine Favoriten gespeichert. Klicke bei einer Tankstelle auf das Herz-Symbol.' : 'Keine Tankstellen in diesem Radius gefunden.'}</div>`;
 
+  // Klick auf Tankstellenzelle öffnet nun den Detail-Dialog
   $('stationList').querySelectorAll('.station').forEach(el=>{
     let s = list.find(x => x.id === el.dataset.id);
     el.addEventListener('click', e => {
       if(e.target.closest('[data-route]') || e.target.closest('[data-fav]')) return;
       selected = s.id;
-      render(false);
-      if(s._marker){ 
-        map.setView([s.lat, s.lng], 15); 
-        s._marker.openPopup(); 
-      }
+      showStationDetails(s);
+      if(s._marker){ map.setView([s.lat, s.lng], 15); }
     });
   });
 
-  // Favoriten umschalten
   $('stationList').querySelectorAll('[data-fav]').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
@@ -412,7 +461,6 @@ function renderMap(list, cheapest){
     let isCheapest = isReallyOpen && s[fuel] === cheapest;
     let isSel = selected === s.id;
     let displayName = esc(s.brand || s.name);
-    let correctedPlace = getCorrectPlace(s);
 
     let iconHtml = `<div class="custom-price-pin ${isCheapest ? 'is-cheapest' : ''} ${isSel ? 'selected' : ''}">
       <span>${displayName}:</span> <strong>${priceText}</strong>
@@ -426,17 +474,10 @@ function renderMap(list, cheapest){
 
     let m = L.marker([s.lat, s.lng], {icon: customIcon}).addTo(layer);
 
-    let popupContent = `
-      <div style="font-family:'Nunito Sans',sans-serif;padding:2px">
-        <strong style="font-size:15px;color:#06396f">${esc(s.name)}</strong><br>
-        <span style="font-size:16px;color:#078d3a;font-weight:800">${isReallyOpen ? fmt(s[fuel]) + ' / l' : 'Geschlossen'}</span><br>
-        <small style="color:#555">${esc(s.street)}, ${esc(correctedPlace)} (${km(s.dist)})</small><br><br>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener" 
-           style="background:#06396f;color:#fff;padding:6px 10px;border-radius:12px;text-decoration:none;font-size:12px;display:inline-block">Route starten ➔</a>
-      </div>`;
-
-    m.bindPopup(popupContent);
-    m.on('click', () => { selectStation(s.id, true); });
+    m.on('click', () => { 
+      selected = s.id;
+      showStationDetails(s);
+    });
 
     s._marker = m;
     markers.push(m);
@@ -512,7 +553,6 @@ $('zoomIn').addEventListener('click', () => map.zoomIn());
 $('zoomOut').addEventListener('click', () => map.zoomOut());
 $('navMap').addEventListener('click', () => setTimeout(() => map.invalidateSize(), 250));
 
-// Untere Navigation mit echten Aktions-Handlern
 document.querySelectorAll('.bottomnav .navitem').forEach(item => {
   item.addEventListener('click', e => {
     document.querySelectorAll('.bottomnav .navitem').forEach(i => i.classList.remove('active'));
@@ -545,7 +585,6 @@ document.querySelectorAll('.bottomnav .navitem').forEach(item => {
   });
 });
 
-// Modal Werte vorbelegen
 $('settingLimit').value = appSettings.maxListItems;
 $('settingDefaultFuel').value = appSettings.defaultFuel;
 $('settingDefaultRadius').value = appSettings.defaultRadius;
@@ -574,6 +613,10 @@ $('saveSettings').addEventListener('click', () => {
 
 $('settingsModal').addEventListener('click', e => {
   if(e.target === $('settingsModal')) $('settingsModal').classList.remove('show');
+});
+
+$('detailModal').addEventListener('click', e => {
+  if(e.target === $('detailModal')) $('detailModal').classList.remove('show');
 });
 
 if(window.L){
