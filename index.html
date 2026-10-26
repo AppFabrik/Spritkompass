@@ -19,23 +19,23 @@
 :root{--navy:#06396f;--navy2:#0b4b89;--blue:#1688d4;--sky:#dff1ff;--yellow:#ffda19;--green:#078d3a;--text:#103d70;--muted:#4773a0;--line:#d5e6f7;--paper:#fff;--bg:#eaf6ff;--shadow:0 7px 20px #164e8020}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#d9efff 0,#f5fbff 52%,#e5f4ff 100%);font-family:'Nunito Sans',Arial,sans-serif;color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1600px;margin:0 auto;min-height:100vh;padding:0 0 84px}.hero{display:block;width:100%;height:auto;min-height:0;overflow:visible;background:#bce6ff;line-height:0}.hero img{display:block!important;visibility:visible;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.installbtn{display:none;border:0;border-radius:999px;background:#ffda19;color:#06396f;font:800 11px 'Barlow Condensed',sans-serif;padding:4px 8px;white-space:nowrap;box-shadow:0 2px 7px #06396f20}.installbtn.visible{display:inline-flex;align-items:center;gap:4px}.main{padding:0 clamp(8px,2.5vw,32px)}
 
-/* Extrem kompakte Kraftstoff-Leiste */
+/* Kompakte Kraftstoff-Leiste */
 .fuelbar{position:relative;margin:-1px 0 6px;padding:6px 8px;background:#ffffffed;border:1px solid #ffffff;border-radius:0 0 16px 16px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.fuel{border:0;border-radius:999px;padding:6px 8px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--navy);background:linear-gradient(110deg,#eff7fd,#e7f1fa);font-family:'Barlow Condensed',sans-serif;font-size:clamp(15px,1.6vw,20px);font-weight:700;transition:transform .16s,background .16s;box-shadow:inset 0 1px 0 #fff}
+.fuel{border:0;border-radius:999px;padding:6px 8px;min-height:38px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--navy);background:linear-gradient(110deg,#eff7fd,#e7f1fa);font-family:'Barlow Condensed',sans-serif;font-size:clamp(15px,1.6vw,20px);font-weight:700;transition:transform .16s,background .16s;box-shadow:inset 0 1px 0 #fff}
 .fuel:hover{transform:translateY(-1px)}.fuel.active{background:linear-gradient(135deg,#06396f,#0c4f90);color:white;box-shadow:0 3px 8px #06396f30}
-.pumpicon{width:18px;height:22px;flex:0 0 auto}.fuel.active .pumpicon{color:#fff}
+.pumpicon{width:16px;height:20px;flex:0 0 auto}.fuel.active .pumpicon{color:#fff}
 
-/* Sehr kompakte Suchbox (ohne Sortieren-Feld) */
+/* Kompakte Suchbox */
 .searchbox{background:#fff;border:1px solid white;border-radius:16px;padding:8px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(160px,1.4fr) minmax(110px,.8fr) auto;gap:6px;align-items:stretch;margin-bottom:8px}
-.control{border:1px solid #d5e5f5;border-radius:12px;min-height:44px;display:flex;align-items:center;gap:8px;padding:4px 10px;min-width:0}
-.control .ico{width:20px;height:24px;color:var(--navy);flex:0 0 auto}
+.control{border:1px solid #d5e5f5;border-radius:12px;min-height:42px;display:flex;align-items:center;gap:8px;padding:4px 10px;min-width:0}
+.control .ico{width:18px;height:22px;color:var(--navy);flex:0 0 auto}
 .control label{display:block;font:700 12px/1.0 'Barlow Condensed',sans-serif;color:var(--navy)}
 .control input,.control select{width:100%;border:0;outline:0;color:var(--text);background:transparent;min-width:0;font-size:12px;padding:2px 0}
-.control select{font-weight:800;font-family:'Barlow Condensed',sans-serif;font-size:14px}
+.control select{font-weight:800;font-family:'Barlow Condensed',sans-serif;font-size:13px}
 .searchbtn{border:0;border-radius:999px;background:linear-gradient(135deg,#ffdf23,#ffd000);color:var(--navy);padding:0 16px;min-width:105px;font:800 16px 'Barlow Condensed',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:inset 0 1px 0 #fff9;transition:filter .15s,transform .15s}
 .searchbtn:hover{filter:saturate(1.15);transform:translateY(-1px)}.searchbtn svg{width:18px;height:18px}
 
-/* Statusbar exakt in 2 Zeilen */
+/* Statusbar */
 .statusbar{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;row-gap:2px;background:#d7ecffcc;border-radius:14px;padding:6px 12px;margin:0 4px 8px;color:var(--navy);font-size:11px;align-items:center}
 .statusbar .statusicon{grid-row:1 / 3;width:24px;height:24px;color:var(--navy)}
 .statusbar .statuscopy{grid-column:2;grid-row:1;display:flex;justify-content:space-between;align-items:center}
@@ -118,15 +118,19 @@
 /* Modals */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;display:none;align-items:center;justify-content:center}
 .modal-backdrop.show{display:flex}
-.modal{background:#fff;padding:20px;border-radius:16px;width:90%;max-width:400px;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
+.modal{background:#fff;padding:20px;border-radius:16px;width:90%;max-width:420px;max-height:85vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
 .modal h3{margin-top:0;font-family:'Barlow Condensed',sans-serif;font-size:20px;display:flex;justify-content:space-between;align-items:center}
 .modal label{display:block;font-weight:700;margin:10px 0 4px;font-size:12px}
 .modal select,.modal input{width:100%;padding:8px;border:1px solid #d5e5f5;border-radius:8px;font-size:12px;background:#f5fbff}
-.modal-close{margin-top:16px;width:100%;background:var(--navy);color:#fff;border:0;padding:10px;border-radius:99px;font:800 14px 'Barlow Condensed',sans-serif;cursor:pointer}
+.modal-close{margin-top:14px;width:100%;background:var(--navy);color:#fff;border:0;padding:10px;border-radius:99px;font:800 14px 'Barlow Condensed',sans-serif;cursor:pointer}
 .detail-prices{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
 .detail-price-box{background:#f0f6fc;border-radius:10px;padding:6px;text-align:center}
 .detail-price-box small{display:block;color:var(--muted);font-weight:700;font-size:10px}
 .detail-price-box span{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;color:var(--green)}
+.opening-hours-box{background:#f7fbff;border:1px solid #e1effe;border-radius:10px;padding:10px;margin-top:10px;font-size:12px}
+.opening-hours-box h4{margin:0 0 6px 0;font-size:13px;color:var(--navy);font-family:'Barlow Condensed',sans-serif}
+.phone-link, .hours-search-link{display:inline-flex;align-items:center;gap:6px;color:var(--blue);font-weight:700;text-decoration:none;margin-top:4px}
+.phone-link:hover, .hours-search-link:hover{text-decoration:underline}
 
 .empty{padding:20px;text-align:center;color:var(--muted)}.toast{position:fixed;z-index:4000;left:50%;bottom:80px;transform:translateX(-50%);max-width:90vw;padding:8px 14px;border-radius:8px;background:#103d70;color:#fff;box-shadow:var(--shadow);display:none;font-size:11px}.toast.show{display:block}
 
@@ -144,14 +148,14 @@
       <button class="fuel" data-fuel="e10"><svg class="pumpicon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M7 4h20a3 3 0 0 1 3 3v32H7z" fill="currentColor"/><path d="M11 8h12v11H11z" fill="#dceeff"/><path d="M30 11h4l3 5v15a4 4 0 0 1-8 0V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 14l4 4" stroke="currentColor" stroke-width="3"/></svg>Super E10</button>
     </section>
 
-    <!-- Kompakte Suche ohne Sortieren-Feld -->
+    <!-- Suchbox mit Platzhalter "Ort oder PLZ" -->
     <section class="searchbox" aria-label="Tankstellensuche">
-      <div class="control place"><svg class="ico" viewBox="0 0 32 38" fill="currentColor" aria-hidden="true"><path d="M16 1C7.7 1 1 7.7 1 16c0 10.2 15 21 15 21s15-10.8 15-21C31 7.7 24.3 1 16 1zm0 20a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg><div style="flex:1;min-width:0"><label for="place">Standort</label><input id="place" value="Blankenburg (Harz)" placeholder="Ort oder PLZ" aria-label="Ort oder PLZ"></div><button id="locBtn" title="Meinen Standort verwenden" aria-label="Standort" style="border:0;background:none;color:var(--navy);font-size:18px">⌖</button></div>
+      <div class="control place"><svg class="ico" viewBox="0 0 32 38" fill="currentColor" aria-hidden="true"><path d="M16 1C7.7 1 1 7.7 1 16c0 10.2 15 21 15 21s15-10.8 15-21C31 7.7 24.3 1 16 1zm0 20a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg><div style="flex:1;min-width:0"><label for="place">Standort</label><input id="place" value="" placeholder="Ort oder PLZ" aria-label="Standort"></div><button id="locBtn" title="Meinen Standort verwenden" aria-label="Standort" style="border:0;background:none;color:var(--navy);font-size:18px">⌖</button></div>
       <div class="control"><svg class="ico" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="3"/><circle cx="18" cy="18" r="5" stroke="currentColor" stroke-width="3"/><path d="M18 1v6M18 29v6M1 18h6M29 18h6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><div style="flex:1;min-width:0"><label for="radius">Umkreis</label><select id="radius"><option value="5">5 km</option><option value="10">10 km</option><option value="15">15 km</option><option value="20" selected>20 km</option><option value="25">25 km</option></select></div></div>
       <button class="searchbtn" id="searchBtn"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="13.5" cy="13.5" r="9.5" stroke="currentColor" stroke-width="3.5"/><path d="m21 21 8 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>Suchen</button>
     </section>
 
-    <!-- Statusbar exakt in 2 Zeilen -->
+    <!-- Statusbar -->
     <div class="statusbar">
       <svg class="statusicon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="3.5"/><path d="M18 8v10l7 4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>
       <div class="statuscopy"><small>Letzte Aktualisierung</small><strong id="lastUpdated">Live via API</strong></div>
@@ -159,17 +163,17 @@
     </div>
     
     <section class="content">
-      <!-- 1. Tankstellenpreise (oben) -->
+      <!-- 1. Tankstellenpreise (Standard: Nach Entfernung) -->
       <section class="listpanel" id="liste">
         <div class="panelhead">
           <svg class="headicon" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M6 4h20v4H6zM8 8h16v20H8zM4 28h24v3H4z"/><path d="M12 13h8v7h-8z" fill="#fff"/></svg>
           <h2 id="listTitle">Tankstellen in deiner Nähe</h2>
-          <select class="sortselect" id="sortQuick" aria-label="Sortierung"><option value="price">Nach Preis (aufsteigend)⌄</option><option value="distance">Nach Entfernung⌄</option></select>
+          <select class="sortselect" id="sortQuick" aria-label="Sortierung"><option value="distance" selected>Nach Entfernung⌄</option><option value="price">Nach Preis (aufsteigend)⌄</option></select>
         </div>
         <div class="stationlist" id="stationList"></div>
       </section>
 
-      <!-- 2. Karte (unter den Preisen) -->
+      <!-- 2. Karte -->
       <section class="mappanel" id="karte">
         <div class="maphead">
           <h2>Tankstellenkarte</h2>
@@ -244,7 +248,7 @@ const TANKER_KEY = '356b990b-2a70-45e2-94fb-feae7672932a';
 const TOMTOM_KEY = 'SwgcPh8E5c1TzOFYEUCMDa7NK0qcshUq';
 const $=id=>document.getElementById(id);
 
-let fuel='diesel', origin={lat:51.7927,lon:10.9564,label:'Blankenburg (Harz)'}, selected=null, map, layer, markers=[], currentStations=[];
+let fuel='diesel', origin={lat:51.7927,lon:10.9564,label:''}, selected=null, map, layer, markers=[], currentStations=[];
 let showOnlyFavorites = false;
 
 let appSettings = {
@@ -272,6 +276,13 @@ function fmt(n) {
 const km=n=>n<1?Math.round(n*1000)+' m':n.toLocaleString('de-DE',{maximumFractionDigits:1})+' km';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+// Korrekte 5-stellige Formatierung für Postleitzahlen (damit führende Nullen nicht verschwinden)
+function formatPLZ(pc) {
+  if(!pc) return '';
+  let clean = String(pc).replace(/[^0-9]/g, '');
+  return clean.padStart(5, '0');
+}
+
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3200)}
 
 function logo(s){
@@ -294,20 +305,24 @@ function logo(s){
   return `<div class="brandlogo" style="background:#eef6ff;color:#06396f;display:grid;place-items:center;font-size:11px;font-weight:800;text-align:center;">TANK${favBadge}</div>`;
 }
 
+// Erweiterte Orts- und Ortsteil-Bereinigung für präzise Zuordnung
 function getCorrectPlace(s){
   let p = s.place || '';
   let st = (s.street || '').toLowerCase();
   let name = (s.name || '').toLowerCase();
-  let pc = s.postCode || '';
+  let pc = formatPLZ(s.postCode);
   
   if(st.includes('langenber') || st.includes('neinstedter') || name.includes('westerhausen') || st.includes('am langen')) {
-    return 'Westerhausen (Thale)';
+    return 'Westerhausen';
   }
   if(pc === '38871' && (st.includes('thie') || name.includes('drübeck'))) {
-    return 'Drübeck (Ilsenburg)';
+    return 'Drübeck';
   }
   if(pc === '38855' && (name.includes('silstedt') || st.includes('silstedter'))) {
-    return 'Silstedt (Wernigerode)';
+    return 'Silstedt';
+  }
+  if(pc === '38889' && (name.includes('heimburg') || st.includes('heimburg'))) {
+    return 'Heimburg';
   }
   return p;
 }
@@ -342,21 +357,28 @@ function processAndSortStations(stations){
   return sorted;
 }
 
-function showStationDetails(s) {
+async function showStationDetails(s) {
   let isFav = favorites.includes(s.id);
   let isReallyOpen = s.isOpen || (typeof s[fuel] === 'number' && s[fuel] > 0);
   let correctedPlace = getCorrectPlace(s);
+  let formattedPC = formatPLZ(s.postCode);
+
+  let searchHoursUrl = `https://www.google.com/search?q=${encodeURIComponent((s.brand || s.name) + ' ' + correctedPlace + ' ' + s.street + ' Öffnungszeiten')}`;
+
+  let openingHtml = `Lade Öffnungszeiten... <br><a href="${searchHoursUrl}" target="_blank" rel="noopener" class="hours-search-link">🕒 Auf Google nach genauen Öffnungszeiten suchen</a>`;
+  let phoneHtml = `<a href="https://www.google.com/search?q=${encodeURIComponent((s.brand || s.name) + ' ' + correctedPlace + ' Telefonnummer')}" target="_blank" rel="noopener" class="phone-link">📞 Online nach Telefonnummer suchen</a>`;
 
   $('detailModalContent').innerHTML = `
     <h3>${esc(s.brand || s.name)} 
       <button class="favbtn" id="modalFavBtn" style="font-size:24px">${isFav ? '♥' : '♡'}</button>
     </h3>
-    <p style="margin:4px 0 12px;color:var(--muted);font-size:13px">${esc(s.name)}</p>
+    <p style="margin:4px 0 10px;color:var(--muted);font-size:12px">${esc(s.name)}</p>
     
-    <div style="font-size:13px;margin-bottom:12px">
-      <strong>Adresse:</strong><br>${esc(s.street)} ${esc(s.houseNumber || '')}, ${esc(s.postCode)} ${esc(correctedPlace)}<br>
+    <div style="font-size:12px;margin-bottom:10px;line-height:1.4">
+      <strong>Adresse:</strong><br>${esc(s.street)} ${esc(s.houseNumber || '')}, ${formattedPC} ${esc(correctedPlace)}<br>
       <strong>Entfernung:</strong> ${km(s.dist)}<br>
-      <strong>Status:</strong> <span style="color:${isReallyOpen ? 'var(--green)' : '#e30613'};font-weight:700">${isReallyOpen ? 'Geöffnet' : 'Geschlossen'}</span>
+      <strong>Status:</strong> <span style="color:${isReallyOpen ? 'var(--green)' : '#e30613'};font-weight:700">${isReallyOpen ? 'Geöffnet' : 'Geschlossen'}</span><br>
+      <div style="margin-top:6px;"><strong>Telefon / Kontakt:</strong><br><span id="phoneContainer">${phoneHtml}</span></div>
     </div>
 
     <div class="detail-prices">
@@ -374,9 +396,14 @@ function showStationDetails(s) {
       </div>
     </div>
 
-    <div style="display:flex;gap:10px;margin-top:16px">
+    <div class="opening-hours-box" id="openingHoursContainer">
+      <h4>Öffnungszeiten</h4>
+      <div id="openingHoursText">${openingHtml}</div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px">
       <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener" 
-         class="routebtn" style="flex:1;text-decoration:none;padding:12px;justify-content:center">Route starten ➔</a>
+         class="routebtn" style="flex:1;text-decoration:none;padding:11px;justify-content:center">Route starten ➔</a>
     </div>
     <button class="modal-close" id="closeDetailModal">Schließen</button>
   `;
@@ -398,6 +425,35 @@ function showStationDetails(s) {
   };
 
   $('closeDetailModal').onclick = () => $('detailModal').classList.remove('show');
+
+  try {
+    let detailResp = await fetch(`https://creativecommons.tankerkoenig.de/json/detail.php?id=${s.id}&apikey=${TANKER_KEY}`);
+    let detailJson = await detailResp.json();
+    if(detailJson.ok && detailJson.station) {
+      let st = detailJson.station;
+      
+      if(st.phone) {
+        let cleanPhone = st.phone.replace(/[^0-9+]/g, '');
+        if($('phoneContainer')) {
+          $('phoneContainer').innerHTML = `<a href="tel:${cleanPhone}" class="phone-link">📞 ${esc(st.phone)} (Anrufen)</a>`;
+        }
+      }
+
+      let hoursText = '';
+      if(st.openingTimes && st.openingTimes.length > 0) {
+        hoursText = '<ul style="margin:0;padding-left:16px;">' + st.openingTimes.map(ot => `<li><b>${esc(ot.text)}</b></li>`).join('') + '</ul>';
+      } else if(st.wholeDay) {
+        hoursText = 'Durchgehend geöffnet (24 Stunden).';
+      } else {
+        hoursText = `Keine festen Zeiten in API hinterlegt.<br><a href="${searchHoursUrl}" target="_blank" rel="noopener" class="hours-search-link">🕒 Auf Google nach Öffnungszeiten suchen</a>`;
+      }
+      if($('openingHoursText')) $('openingHoursText').innerHTML = hoursText;
+    } else {
+      if($('openingHoursText')) $('openingHoursText').innerHTML = `Keine API-Details verfügbar.<br><a href="${searchHoursUrl}" target="_blank" rel="noopener" class="hours-search-link">🕒 Auf Google nach Öffnungszeiten suchen</a>`;
+    }
+  } catch(err) {
+    if($('openingHoursText')) $('openingHoursText').innerHTML = `Fehler beim Laden.<br><a href="${searchHoursUrl}" target="_blank" rel="noopener" class="hours-search-link">🕒 Auf Google nach Öffnungszeiten suchen</a>`;
+  }
 }
 
 function render(updateMap = true){
@@ -421,6 +477,7 @@ function render(updateMap = true){
     let isCheapest = isReallyOpen && s[fuel] === cheapest;
     let isSelected = selected === s.id;
     let correctedPlace = getCorrectPlace(s);
+    let formattedPC = formatPLZ(s.postCode);
     let isFav = favorites.includes(s.id);
 
     return `
@@ -431,7 +488,7 @@ function render(updateMap = true){
           <div class="price">${priceVal}${isReallyOpen ? '<small> / l</small>' : ''}${isCheapest ? '<span class="cheapest">Günstigste</span>' : ''}</div>
           <div class="stationmeta">
             <div class="metarow"><svg viewBox="0 0 18 18" fill="currentColor"><path d="M9 1a6 6 0 0 0-6 6c0 4.2 6 10 6 10s6-5.8 6-10a6 6 0 0 0-6-6zm0 8.2A2.2 2.2 0 1 1 9 4.8a2.2 2.2 0 0 1 0 4.4z"/></svg><span>${km(s.dist)}</span></div>
-            <div class="metarow"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2h12v14H3zM6 5h6M6 8h6M6 11h4"/></svg><span>${esc(s.street)} ${esc(s.houseNumber || '')}, ${esc(s.postCode)} ${esc(correctedPlace)}</span></div>
+            <div class="metarow"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2h12v14H3zM6 5h6M6 8h6M6 11h4"/></svg><span>${esc(s.street)} ${esc(s.houseNumber || '')}, ${formattedPC} ${esc(correctedPlace)}</span></div>
           </div>
         </div>
         <div class="stationactions">
@@ -447,7 +504,6 @@ function render(updateMap = true){
       if(e.target.closest('[data-route]') || e.target.closest('[data-fav]')) return;
       selected = s.id;
       showStationDetails(s);
-      if(s._marker){ map.setView([s.lat, s.lng], 15); }
     });
   });
 
@@ -522,11 +578,11 @@ function renderMap(list, cheapest){
 let updateMapBounds = true;
 
 async function geocode(q){
-  let u = 'https://nominatim.openstreetmap.org/search?format=jsonv2&country=Germany&limit=1&q=' + encodeURIComponent(q);
+  let u = 'https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=de&limit=1&q=' + encodeURIComponent(q);
   let r = await fetch(u);
   if(!r.ok) throw Error('Ortssuche vorübergehend nicht verfügbar.');
   let j = await r.json();
-  if(!j[0]) throw Error('Ort oder Postleitzahl nicht gefunden.');
+  if(!j[0]) throw Error('Ort oder Postleitzahl in Deutschland nicht gefunden.');
   return {lat: +j[0].lat, lon: +j[0].lon, label: q};
 }
 
@@ -536,7 +592,11 @@ async function search(){
   b.textContent = 'Suche läuft …';
   try {
     let q = $('place').value.trim();
-    if(q && q !== origin.label) origin = await geocode(q);
+    if(q && q !== origin.label) {
+      origin = await geocode(q);
+    } else if(!origin.label && !q) {
+      origin = {lat: 51.7927, lon: 10.9564, label: 'Blankenburg (Harz)'};
+    }
     
     updateMapBounds = true;
     currentStations = await fetchTankerkoenigData();
@@ -572,7 +632,8 @@ $('locBtn').addEventListener('click', () => {
     $('place').value = '';
     map.setView([origin.lat, origin.lon], 12);
     search();
-  }, () => toast('Standortzugriff nicht möglich.'), {timeout: 10000, enableHighAccuracy: true});
+    toast('Standort erfolgreich ermittelt.');
+  }, () => toast('Standortzugriff nicht möglich. Bitte Browser-Berechtigung prüfen.'), {timeout: 10000, enableHighAccuracy: true});
 });
 
 $('mapMode').addEventListener('click', () => { $('mapMode').classList.add('active'); $('listMode').classList.remove('active'); $('karte').scrollIntoView({behavior:'smooth'}); });
