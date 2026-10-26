@@ -1,0 +1,28 @@
+{
+  "name": "Pfiffi's SpritKompass",
+  "short_name": "SpritKompass",
+  "description": "Kraftstoffpreise vergleichen und günstiger tanken.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#d9efff",
+  "theme_color": "#06386e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./pfiffi-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

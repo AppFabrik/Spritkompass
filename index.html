@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06386e">
+<meta name="description" content="Pfiffi's SpritKompass – Kraftstoffpreise vergleichen und günstiger tanken.">
+<title>Pfiffi's SpritKompass – Clever tanken</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./pfiffi-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--navy:#06396f;--navy2:#0b4b89;--blue:#1688d4;--sky:#dff1ff;--yellow:#ffda19;--green:#078d3a;--text:#103d70;--muted:#4773a0;--line:#d5e6f7;--paper:#fff;--bg:#eaf6ff;--shadow:0 7px 20px #164e8020}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#d9efff 0,#f5fbff 52%,#e5f4ff 100%);font-family:'Nunito Sans',Arial,sans-serif;color:var(--text)}button,input,select{font:inherit}button{pointer}.app{max-width:1600px;margin:0 auto;min-height:100vh;padding:0 0 84px}.hero{display:block;width:100%;height:auto;min-height:0;overflow:visible;background:#bce6ff;line-height:0}.hero img{display:block!important;visibility:visible;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.installbtn{display:none;border:0;border-radius:999px;background:#ffda19;color:#06396f;font:800 14px 'Barlow Condensed',sans-serif;padding:9px 13px;white-space:nowrap;box-shadow:0 2px 7px #06396f20}.installbtn.visible{display:inline-flex;align-items:center;gap:7px}.main{padding:0 clamp(12px,3.3vw,42px)}
+.fuelbar{position:relative;margin:-1px 0 13px;padding:12px 14px;background:#ffffffed;border:1px solid #ffffff;border-radius:0 0 28px 28px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.fuel{border:0;border-radius:999px;padding:14px 16px;min-height:70px;display:flex;align-items:center;justify-content:center;gap:12px;color:var(--navy);background:linear-gradient(110deg,#eff7fd,#e7f1fa);font-family:'Barlow Condensed',sans-serif;font-size:clamp(19px,2.2vw,29px);font-weight:700;transition:transform .16s,background .16s;box-shadow:inset 0 1px 0 #fff}.fuel:hover{transform:translateY(-2px)}.fuel.active{background:linear-gradient(135deg,#06396f,#0c4f90);color:white;box-shadow:0 5px 12px #06396f30}.pumpicon{width:34px;height:39px;flex:0 0 auto}.fuel.active .pumpicon{color:#fff}
+.searchbox{background:#fff;border:1px solid white;border-radius:26px;padding:13px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(220px,1.45fr) minmax(145px,.8fr) minmax(150px,.8fr) auto;gap:12px;align-items:stretch;margin-bottom:14px}.control{border:1px solid #d5e5f5;border-radius:21px;min-height:66px;display:flex;align-items:center;gap:12px;padding:9px 14px;min-width:0}.control .ico{width:32px;height:36px;color:var(--navy);flex:0 0 auto}.control label{display:block;font:700 16px/1.15 'Barlow Condensed',sans-serif;color:var(--navy)}.control input,.control select{width:100%;border:0;outline:0;color:var(--text);background:transparent;min-width:0;font-size:14px;padding:4px 0}.control select{font-weight:800;font-family:'Barlow Condensed',sans-serif;font-size:18px}.searchbtn{border:0;border-radius:999px;background:linear-gradient(135deg,#ffdf23,#ffd000);color:var(--navy);padding:0 25px;min-width:155px;font:800 24px 'Barlow Condensed',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 #fff9;transition:filter .15s,transform .15s}.searchbtn:hover{filter:saturate(1.15);transform:translateY(-1px)}.searchbtn svg{width:30px;height:30px}
+.statusbar{display:flex;align-items:center;gap:12px;background:#d7ecffcc;border-radius:20px;padding:10px 16px;margin:0 4px 12px;color:var(--navy);font-size:12px}.statusbar strong{font-size:15px}.statusicon{width:34px;height:34px;flex:0 0 auto}.statuscopy{flex:1}.statuscopy small{display:block}
+.content{display:flex;flex-direction:column;gap:16px;align-items:stretch}.listpanel,.mappanel{background:#ffffffeb;border:1px solid white;border-radius:26px;box-shadow:var(--shadow);overflow:hidden}.panelhead{display:flex;align-items:center;gap:10px;padding:14px 15px 10px}.panelhead h2{margin:0;font:800 23px 'Barlow Condensed',sans-serif;letter-spacing:-.25px;flex:1}.headicon{width:30px;height:30px;flex:0 0 auto;color:var(--navy)}.sortselect{max-width:185px;background:#f0f6fc;border:0;border-radius:999px;color:var(--navy);padding:9px 12px;font-size:12px;outline:0}.stationlist{display:grid;gap:6px;padding:0 10px 10px}
+.station{border:1px solid #d5e5f5;border-radius:14px;background:linear-gradient(110deg,#fff,#fbfdff);padding:8px 12px;display:grid;grid-template-columns:68px minmax(0,1fr) 96px;gap:8px;align-items:center;transition:box-shadow .15s,border .15s;cursor:pointer}
+.station:hover,.station.selected{border-color:#078d3a;box-shadow:0 0 0 3px rgba(7,141,58,0.25);background:#f3faf5}
+
+/* Exakte Logos */
+.brandlogo{width:62px;height:62px;border-radius:12px;display:grid;place-items:center;background:#f5fbff;overflow:hidden;font-family:'Barlow Condensed',sans-serif;font-weight:900;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08)}
+.logo-aral{background:#003399;color:#fff;font-size:16px;letter-spacing:-0.5px}
+.logo-shell{background:#fbce07;color:#dd1d21;font-size:22px}
+.logo-hem{background:#e30613;color:#fff;font-size:15px}
+.logo-jet{background:#003399;color:#ffcc00;font-size:18px;font-style:italic}
+.logo-total{background:#fd6b00;color:#fff;font-size:13px;text-align:center;line-height:1.1}
+.logo-avia{background:#e31b23;color:#fff;font-size:15px}
+.logo-star{background:#ffe500;color:#e30613;font-size:15px}
+.logo-bft{background:#ff7616;color:#101010;font-size:16px;font-style:italic}
+.logo-hoyer{background:#00539f;color:#ffed00;font-size:15px}
+.logo-m1{background:#222;color:#ffcc00;font-size:18px}
+
+.stationmain{min-width:0}.stationname{font:700 16px/1.2 'Barlow Condensed',sans-serif;margin:0 0 2px;color:var(--navy)}
+.price{color:var(--green);font:800 28px/1 'Barlow Condensed',sans-serif;white-space:nowrap;letter-spacing:-.5px}.price small{font-size:15px;font-weight:600}
+.cheapest{display:inline-flex;align-items:center;gap:4px;background:#078d3a;color:#fff;border-radius:99px;padding:3px 7px;font-size:10px;font-weight:400;margin-left:4px;vertical-align:middle}
+.stationmeta{display:grid;gap:2px;margin-top:4px;font-size:11px;color:#32669b}
+.metarow{display:flex;gap:6px;align-items:center;min-width:0}.metarow svg{width:13px;height:13px;flex:0 0 auto}.metarow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stationactions{display:flex;flex-direction:column;gap:6px;align-items:stretch}.arrow{font-size:20px;line-height:1;text-align:right;color:var(--navy);padding-right:4px}
+.routebtn{border:0;border-radius:999px;background:linear-gradient(135deg,#06396f,#0d4c8b);color:#fff;font:700 14px 'Barlow Condensed',sans-serif;padding:7px 10px;display:flex;justify-content:center;align-items:center;gap:5px;white-space:nowrap}.routebtn svg{width:15px;height:15px}
+
+.mappanel{position:relative}.maphead{display:flex;justify-content:space-between;align-items:center;padding:13px 14px 8px}.maphead h2{margin:0;font:800 22px 'Barlow Condensed',sans-serif}.mapmodes{display:flex;align-items:center;gap:3px;background:#fff;border:1px solid #dce9f6;border-radius:999px;padding:4px;box-shadow:0 3px 9px #164e8015}.mapmodes button{border:0;border-radius:999px;padding:8px 12px;background:transparent;color:var(--navy);font:700 14px 'Barlow Condensed',sans-serif}.mapmodes button.active{background:var(--navy);color:#fff}.mapmodes span{color:#c0d4e7}.mapwrap{position:relative;margin:0 7px 7px;border:4px solid white;border-radius:22px;overflow:hidden;background:#cde8b7}.map{height:520px;width:100%;background:#d7eec6}.mapbadge{position:absolute;z-index:500;right:12px;bottom:14px;display:grid;gap:6px}.mapbadge button{border:0;background:#fff;border-radius:10px;box-shadow:0 2px 8px #173e2c25;width:42px;height:42px;color:var(--navy);font-size:25px}.mapnote{font-size:11px;color:#50739a;padding:0 14px 10px}
+
+/* Karten-Pins mit lesbarer schwarzer Schrift */
+.custom-price-pin {
+  background: #ffffff;
+  color: #103d70;
+  border: 2px solid #06396f;
+  border-radius: 10px;
+  padding: 3px 7px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -100%);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.custom-price-pin:hover, .custom-price-pin.selected {
+  background: #ffda19;
+  color: #06396f;
+  border-color: #06396f;
+  transform: translate(-50%, -108%) scale(1.1);
+  z-index: 1000!important;
+}
+.custom-price-pin.is-cheapest {
+  background: #078d3a;
+  color: #ffffff;
+  border-color: #055f26;
+}
+
+.footerinfo{margin:10px 3px 0;border-radius:20px;background:#d8ecffdc;padding:10px 16px;display:flex;align-items:center;gap:12px;color:var(--navy);font-size:12px}.footerinfo .clock{width:34px;height:34px;flex:0 0 auto}.footerinfo strong{font-size:17px;display:block}.footsep{height:34px;width:1px;background:#5c9bce;margin:0 8px}.footerinfo .disclaimer{flex:1}
+
+/* Untere Navigation mit funktionierendem Farbwechsel */
+.bottomnav{position:fixed;z-index:1000;bottom:0;left:0;right:0;background:linear-gradient(110deg,#06396f,#07335f);color:#fff;display:flex;justify-content:center;gap:0;padding:10px max(8px,calc((100vw - 1200px)/2)) calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 15px #06396f24;border-top:3px solid #ffda19}
+.navitem{flex:1;max-width:210px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;color:white;text-decoration:none;border:0;background:transparent;font:600 14px 'Barlow Condensed',sans-serif;padding:2px;cursor:pointer;transition:color .15s}
+.navitem svg{width:27px;height:27px;fill:currentColor}
+.navitem.active{color:var(--yellow)}
+
+/* Einstellungs-Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;display:none;align-items:center;justify-content:center}
+.modal-backdrop.show{display:flex}
+.modal{background:#fff;padding:24px;border-radius:20px;width:90%;max-width:420px;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
+.modal h3{margin-top:0;font-family:'Barlow Condensed',sans-serif;font-size:24px}
+.modal label{display:block;font-weight:700;margin:14px 0 6px;font-size:14px}
+.modal select,.modal input{width:100%;padding:10px;border:1px solid #d5e5f5;border-radius:10px;font-size:14px;background:#f5fbff}
+.modal-close{margin-top:20px;width:100%;background:var(--navy);color:#fff;border:0;padding:12px;border-radius:99px;font:800 16px 'Barlow Condensed',sans-serif;cursor:pointer}
+
+.empty{padding:28px;text-align:center;color:var(--muted)}.toast{position:fixed;z-index:4000;left:50%;bottom:92px;transform:translateX(-50%);max-width:90vw;padding:12px 18px;border-radius:12px;background:#103d70;color:#fff;box-shadow:var(--shadow);display:none;font-size:13px}.toast.show{display:block}
+
+@media(max-width:900px){.searchbox{grid-template-columns:minmax(0,1.2fr) minmax(125px,.7fr) auto}.control.place{grid-column:1/2}.searchbtn{min-width:125px;padding:0 16px}.map{height:380px}}
+@media(max-width:580px){.app{padding-bottom:82px}.hero{display:block!important;width:100%!important;height:auto!important;min-height:0!important;overflow:visible!important}.hero img{display:block!important;visibility:visible!important;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.main{padding:0 9px}.fuelbar{padding:8px;gap:6px;border-radius:0 0 20px 20px;margin-bottom:9px}.fuel{min-height:55px;padding:8px 4px;gap:5px;font-size:18px}.pumpicon{width:25px;height:29px}.searchbox{grid-template-columns:minmax(0,1fr) 110px;gap:7px;padding:9px;border-radius:20px;margin-bottom:9px}.control{min-height:58px;border-radius:16px;padding:7px 9px;gap:7px}.control.place{grid-column:1/-1}.control .ico{width:26px;height:29px}.control label{font-size:14px}.control input{font-size:13px}.control select{font-size:16px}.searchbtn{min-height:58px;min-width:0;grid-column:1/-1;font-size:21px}.statusbar{margin:0 0 8px;padding:8px 10px}.content{gap:9px}.listpanel,.mappanel{border-radius:20px}.panelhead{padding:11px 11px 8px;flex-wrap:wrap}.panelhead h2{font-size:21px}.headicon{width:25px}.sortselect{max-width:145px;padding:8px;font-size:11px}.stationlist{padding:0 7px 8px;gap:6px}.station{grid-template-columns:52px minmax(0,1fr) 72px;gap:6px;padding:7px 9px;border-radius:12px}.brandlogo{width:48px;height:48px;border-radius:10px}.stationname{font-size:14px}.price{font-size:22px}.price small{font-size:12px}.cheapest{font-size:8px;padding:2px 5px;margin-left:2px}.stationmeta{font-size:10px;margin-top:3px;gap:1px}.metarow svg{width:11px;height:11px}.stationactions{gap:4px}.arrow{font-size:16px}.routebtn{font-size:12px;padding:6px 4px}.routebtn svg{width:13px;height:13px}.maphead{padding:10px 10px 6px}.maphead h2{font-size:20px}.mapmodes button{font-size:13px;padding:7px 9px}.map{height:320px}.footerinfo{margin:8px 0 0;padding:9px 10px;gap:8px;font-size:10px}.footerinfo .clock{width:27px;height:27px}.footerinfo strong{font-size:14px}.footsep{margin:0 2px;height:30px}.navitem{font-size:12px}.navitem svg{width:24px;height:24px}}
+</style>
+</head>
+<body>
+<div class="app" id="start">
+  <header class="hero"><img src="./hero-header.jpg" alt="Pfiffi's SpritKompass – Günstiger tanken. Clever fahren." fetchpriority="high" decoding="async"></header>
+  <main class="main">
+    <section class="fuelbar" aria-label="Kraftstoff wählen">
+      <button class="fuel active" data-fuel="diesel"><svg class="pumpicon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M7 4h20a3 3 0 0 1 3 3v32H7z" fill="currentColor"/><path d="M11 8h12v11H11z" fill="#dceeff"/><path d="M30 11h4l3 5v15a4 4 0 0 1-8 0V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 14l4 4" stroke="currentColor" stroke-width="3"/></svg>Diesel</button>
+      <button class="fuel" data-fuel="e5"><svg class="pumpicon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M7 4h20a3 3 0 0 1 3 3v32H7z" fill="currentColor"/><path d="M11 8h12v11H11z" fill="#dceeff"/><path d="M30 11h4l3 5v15a4 4 0 0 1-8 0V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 14l4 4" stroke="currentColor" stroke-width="3"/></svg>Super E5</button>
+      <button class="fuel" data-fuel="e10"><svg class="pumpicon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M7 4h20a3 3 0 0 1 3 3v32H7z" fill="currentColor"/><path d="M11 8h12v11H11z" fill="#dceeff"/><path d="M30 11h4l3 5v15a4 4 0 0 1-8 0V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 14l4 4" stroke="currentColor" stroke-width="3"/></svg>Super E10</button>
+    </section>
+    <section class="searchbox" aria-label="Tankstellensuche">
+      <div class="control place"><svg class="ico" viewBox="0 0 32 38" fill="currentColor" aria-hidden="true"><path d="M16 1C7.7 1 1 7.7 1 16c0 10.2 15 21 15 21s15-10.8 15-21C31 7.7 24.3 1 16 1zm0 20a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg><div style="flex:1;min-width:0"><label for="place">Standort</label><input id="place" value="Blankenburg (Harz)" placeholder="Ort oder Postleitzahl" aria-label="Ort oder Postleitzahl"></div><button id="locBtn" title="Meinen Standort verwenden" aria-label="Meinen Standort verwenden" style="border:0;background:none;color:var(--navy);font-size:22px">⌖</button></div>
+      <div class="control"><svg class="ico" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="3"/><circle cx="18" cy="18" r="5" stroke="currentColor" stroke-width="3"/><path d="M18 1v6M18 29v6M1 18h6M29 18h6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><div style="flex:1;min-width:0"><label for="radius">Umkreis</label><select id="radius"><option value="5">5 km</option><option value="10">10 km</option><option value="15">15 km</option><option value="20" selected>20 km</option><option value="25">25 km</option></select></div></div>
+      <div class="control"><div style="flex:1;min-width:0"><label for="sort">Sortieren</label><select id="sort"><option value="price">Preis (aufsteigend)</option><option value="distance">Entfernung</option></select></div></div>
+      <button class="searchbtn" id="searchBtn"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="13.5" cy="13.5" r="9.5" stroke="currentColor" stroke-width="3.5"/><path d="m21 21 8 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>Suchen</button>
+    </section>
+    <div class="statusbar"><svg class="statusicon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="3.5"/><path d="M18 8v10l7 4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg><div class="statuscopy"><small>Letzte Aktualisierung der Preisdaten</small><strong id="lastUpdated">Live via Tankerkönig API</strong></div><div class="footsep"></div><button class="installbtn" id="installApp" type="button">⬇ App installieren</button><div class="disclaimer">ⓘ Preise direkt von MTS-K / Tankerkönig.</div></div>
+    
+    <section class="content">
+      <!-- 1. Tankstellenpreise (oben) -->
+      <section class="listpanel" id="liste">
+        <div class="panelhead">
+          <svg class="headicon" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M6 4h20v4H6zM8 8h16v20H8zM4 28h24v3H4z"/><path d="M12 13h8v7h-8z" fill="#fff"/></svg>
+          <h2>Tankstellen in deiner Nähe</h2>
+          <select class="sortselect" id="sortQuick" aria-label="Sortierung"><option value="price">Nach Preis (aufsteigend)⌄</option><option value="distance">Nach Entfernung⌄</option></select>
+        </div>
+        <div class="stationlist" id="stationList"></div>
+      </section>
+
+      <!-- 2. Karte (unter den Preisen) -->
+      <section class="mappanel" id="karte">
+        <div class="maphead">
+          <h2>Tankstellenkarte</h2>
+          <div class="mapmodes">
+            <button class="active" id="mapMode">⌕ Karte</button><span>|</span><button id="listMode">Liste</button><span>|</span><button id="recenter" title="Auf Suchort zentrieren">◈</button>
+          </div>
+        </div>
+        <div class="mapwrap">
+          <div id="map" class="map" role="application" aria-label="Karte mit Tankstellenmarkern"></div>
+          <div class="mapbadge"><button id="zoomIn" aria-label="Vergrößern">+</button><button id="zoomOut" aria-label="Verkleinern">−</button></div>
+        </div>
+        <div class="mapnote">Karte &copy; TomTom · Marker auswählen für Preise und Route.</div>
+      </section>
+    </section>
+
+    <div class="footerinfo"><svg class="clock" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="3.5"/><path d="M18 8v10l7 4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg><div><small>Letzte Aktualisierung der Preisdaten</small><strong id="footerTime">Heute, --:-- Uhr</strong></div><div class="footsep"></div><div class="disclaimer">ⓘ Die angegebenen Preise können abweichen.<br>Daten geliefert von Tankerkönig (CC BY 4.0).</div></div>
+  </main>
+</div>
+
+<!-- Untere Navigation mit funktionierenden, umschaltbaren Icons -->
+<nav class="bottomnav" id="bottomNav" aria-label="Hauptnavigation">
+  <a class="navitem active" href="#start" data-nav="start"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v10h-6v-6H9v6H3z"/></svg>Start</a>
+  <a class="navitem" href="#karte" id="navMap" data-nav="karte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 5 6-2 6 3 6-2v15l-6 2-6-3-6 2zM9 3v15m6-12v15"/></svg>Karte</a>
+  <button class="navitem" id="favorites" data-nav="favorites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg>Favoriten</button>
+  <button class="navitem" id="settingsBtn" data-nav="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.5 2.6-1.7-.6a8 8 0 0 1-1.8 1l-.3 1.8h-3l-.3-1.8a8 8 0 0 1-1.8-1l-1.7.6-1.5-2.6 1.4-1.1a8 8 0 0 1 0-2l-1.4-1.1 1.5-2.6 1.7.6a8 8 0 0 1 1.8-1l.3-1.8h3l.3 1.8a8 8 0 0 1 1.8 1l1.7-.6 1.5-2.6-1.4 1.1a8 8 0 0 1 0 2Z"/></svg>Einstellungen</button>
+  <button class="navitem" id="infoBtn" data-nav="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/></svg>Info</button>
+</nav>
+
+<!-- Einstellungs-Modal -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <h3>App-Einstellungen</h3>
+    <label for="settingLimit">Max. Anzahl Tankstellen in Liste:</label>
+    <select id="settingLimit">
+      <option value="3">3 Tankstellen</option>
+      <option value="5" selected>5 Tankstellen</option>
+      <option value="10">10 Tankstellen</option>
+      <option value="15">15 Tankstellen</option>
+      <option value="999">Alle anzeigen</option>
+    </select>
+    <button class="modal-close" id="saveSettings">Einstellungen speichern</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(()=>{'use strict';
+const TANKER_KEY = '356b990b-2a70-45e2-94fb-feae7672932a';
+const TOMTOM_KEY = 'SwgcPh8E5c1TzOFYEUCMDa7NK0qcshUq';
+const $=id=>document.getElementById(id);
+
+let fuel='diesel', origin={lat:51.7927,lon:10.9564,label:'Blankenburg (Harz)'}, selected=null, map, layer, markers=[], currentStations=[];
+
+// Einstellungen aus LocalStorage laden
+let appSettings = {
+  maxListItems: parseInt(localStorage.getItem('pfiffi_limit') || '5', 10)
+};
+
+// Preise ohne "9" am Ende (kaufmännisch auf 2 Nachkommastellen gerundet)
+function fmt(n) {
+  if(n == null || n === false || isNaN(n)) return '–';
+  let rounded = Math.round(n * 100) / 100;
+  return rounded.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' €';
+}
+
+const km=n=>n<1?Math.round(n*1000)+' m':n.toLocaleString('de-DE',{maximumFractionDigits:1})+' km';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3200)}
+
+// Exakte Logos für Tankstellenmarken
+function logo(s){
+  let b = (s.brand || '').toLowerCase();
+  let name = (s.name || '').toLowerCase();
+  
+  if(b.includes('aral') || name.includes('aral')) return '<div class="brandlogo logo-aral">ARAL</div>';
+  if(b.includes('shell') || name.includes('shell')) return '<div class="brandlogo logo-shell">SHELL</div>';
+  if(b.includes('hem') || name.includes('hem')) return '<div class="brandlogo logo-hem">HEM</div>';
+  if(b.includes('jet') || name.includes('jet')) return '<div class="brandlogo logo-jet">JET</div>';
+  if(b.includes('total') || name.includes('total')) return '<div class="brandlogo logo-total">TOTAL</div>';
+  if(b.includes('avia') || name.includes('avia')) return '<div class="brandlogo logo-avia">AVIA</div>';
+  if(b.includes('star') || name.includes('star')) return '<div class="brandlogo logo-star">star</div>';
+  if(b.includes('bft') || name.includes('bft')) return '<div class="brandlogo logo-bft">bft</div>';
+  if(b.includes('hoyer') || name.includes('hoyer')) return '<div class="brandlogo logo-hoyer">HOYER</div>';
+  if(b.includes('m1') || name.includes('m1')) return '<div class="brandlogo logo-m1">M1</div>';
+  
+  return '<div class="brandlogo" style="background:#eef6ff;color:#06396f;display:grid;place-items:center;font-size:11px;font-weight:800;text-align:center;">TANK</div>';
+}
+
+// Präzise Ortsteil-Erkennung für die Harzregion
+function getCorrectPlace(s){
+  let p = s.place || '';
+  let st = (s.street || '').toLowerCase();
+  let name = (s.name || '').toLowerCase();
+  let pc = s.postCode || '';
+  
+  if(st.includes('langenber') || st.includes('neinstedter') || name.includes('westerhausen') || st.includes('am langen')) {
+    return 'Westerhausen (Thale)';
+  }
+  if(pc === '38871' && (st.includes('thie') || name.includes('drübeck'))) {
+    return 'Drübeck (Ilsenburg)';
+  }
+  if(pc === '38855' && (name.includes('silstedt') || st.includes('silstedter'))) {
+    return 'Silstedt (Wernigerode)';
+  }
+  return p;
+}
+
+async function fetchTankerkoenigData(){
+  let rad = $('radius').value;
+  let url = `https://creativecommons.tankerkoenig.de/json/list.php?lat=${origin.lat}&lng=${origin.lon}&rad=${rad}&sort=dist&type=all&apikey=${TANKER_KEY}`;
+  
+  let resp = await fetch(url);
+  if(!resp.ok) throw new Error('Netzwerk-Fehler beim Abrufen der Tankerkönig API.');
+  let json = await resp.json();
+  if(!json.ok) throw new Error(json.message || 'Tankerkönig API Fehler');
+  
+  return json.stations || [];
+}
+
+function processAndSortStations(stations){
+  let sorted = [...stations];
+  let sortVal = $('sort').value;
+  
+  if(sortVal === 'price'){
+    sorted.sort((a,b)=>{
+      let openA = a.isOpen || a[fuel] > 0;
+      let openB = b.isOpen || b[fuel] > 0;
+      let pA = openA && typeof a[fuel] === 'number' ? a[fuel] : 999;
+      let pB = openB && typeof b[fuel] === 'number' ? b[fuel] : 999;
+      return pA - pB || a.dist - b.dist;
+    });
+  } else {
+    sorted.sort((a,b)=>a.dist - b.dist);
+  }
+  return sorted;
+}
+
+function selectStation(id, scrollToList = false){
+  selected = id;
+  render(false);
+  
+  if(scrollToList){
+    let el = document.querySelector(`.station[data-id="${id}"]`);
+    if(el){
+      el.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  }
+}
+
+function render(updateMap = true){
+  let list = processAndSortStations(currentStations);
+  if($('sortQuick').value !== $('sort').value) $('sortQuick').value = $('sort').value;
+  
+  let validPrices = list.filter(s=>(s.isOpen || s[fuel]>0) && typeof s[fuel] === 'number').map(s=>s[fuel]);
+  let cheapest = validPrices.length ? Math.min(...validPrices) : Infinity;
+
+  // Begrenzung anhand der Einstellungen für die Liste
+  let displayList = list.slice(0, appSettings.maxListItems);
+
+  $('stationList').innerHTML = displayList.length ? displayList.map(s => {
+    let isReallyOpen = s.isOpen || (typeof s[fuel] === 'number' && s[fuel] > 0);
+    let priceVal = isReallyOpen ? fmt(s[fuel]) : 'Geschlossen';
+    let isCheapest = isReallyOpen && s[fuel] === cheapest;
+    let isSelected = selected === s.id;
+    let correctedPlace = getCorrectPlace(s);
+
+    return `
+      <article class="station ${isSelected?'selected':''}" data-id="${s.id}" tabindex="0">
+        <div>${logo(s)}</div>
+        <div class="stationmain">
+          <h3 class="stationname">${esc(s.brand || s.name)} ${s.brand ? '<small style="font-weight:400;color:#666">('+esc(s.name)+')</small>':''}</h3>
+          <div class="price">${priceVal}${isReallyOpen ? '<small> / l</small>' : ''}${isCheapest ? '<span class="cheapest">Günstigste</span>' : ''}</div>
+          <div class="stationmeta">
+            <div class="metarow"><svg viewBox="0 0 18 18" fill="currentColor"><path d="M9 1a6 6 0 0 0-6 6c0 4.2 6 10 6 10s6-5.8 6-10a6 6 0 0 0-6-6zm0 8.2A2.2 2.2 0 1 1 9 4.8a2.2 2.2 0 0 1 0 4.4z"/></svg><span>${km(s.dist)}</span></div>
+            <div class="metarow"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2h12v14H3zM6 5h6M6 8h6M6 11h4"/></svg><span>${esc(s.street)} ${esc(s.houseNumber || '')}, ${esc(s.postCode)} ${esc(correctedPlace)}</span></div>
+          </div>
+        </div>
+        <div class="stationactions">
+          <div class="arrow">›</div>
+          <button class="routebtn" data-route="${s.id}"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 11 18 3l-5 15-3-6z"/></svg>Route</button>
+        </div>
+      </article>`;
+  }).join('') : '<div class="empty">Keine Tankstellen in diesem Radius gefunden. Vergrößere den Umkreis.</div>';
+
+  $('stationList').querySelectorAll('.station').forEach(el=>{
+    let s = list.find(x => x.id === el.dataset.id);
+    el.addEventListener('click', e => {
+      if(e.target.closest('[data-route]')) return;
+      selected = s.id;
+      render(false);
+      if(s._marker){ 
+        map.setView([s.lat, s.lng], 15); 
+        s._marker.openPopup(); 
+      }
+    });
+  });
+
+  $('stationList').querySelectorAll('[data-route]').forEach(b => {
+    b.addEventListener('click', e => {
+      e.stopPropagation();
+      let s = list.find(x => x.id === b.dataset.route);
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`, '_blank', 'noopener');
+    });
+  });
+
+  // Auf der Karte werden ALLE Tankstellen angezeigt
+  if(updateMap) {
+    renderMap(list, cheapest);
+  }
+}
+
+function renderMap(list, cheapest){
+  if(!map || !layer) return;
+  layer.clearLayers();
+  markers = [];
+
+  list.forEach(s => {
+    let isReallyOpen = s.isOpen || (typeof s[fuel] === 'number' && s[fuel] > 0);
+    let priceText = isReallyOpen ? fmt(s[fuel]) : 'Zu';
+    let isCheapest = isReallyOpen && s[fuel] === cheapest;
+    let isSel = selected === s.id;
+    let displayName = esc(s.brand || s.name);
+    let correctedPlace = getCorrectPlace(s);
+
+    let iconHtml = `<div class="custom-price-pin ${isCheapest ? 'is-cheapest' : ''} ${isSel ? 'selected' : ''}">
+      <span>${displayName}:</span> <strong>${priceText}</strong>
+    </div>`;
+
+    let customIcon = L.divIcon({
+      html: iconHtml,
+      className: '',
+      iconSize: [0, 0]
+    });
+
+    let m = L.marker([s.lat, s.lng], {icon: customIcon}).addTo(layer);
+
+    let popupContent = `
+      <div style="font-family:'Nunito Sans',sans-serif;padding:2px">
+        <strong style="font-size:15px;color:#06396f">${esc(s.name)}</strong><br>
+        <span style="font-size:16px;color:#078d3a;font-weight:800">${isReallyOpen ? fmt(s[fuel]) + ' / l' : 'Geschlossen'}</span><br>
+        <small style="color:#555">${esc(s.street)}, ${esc(correctedPlace)} (${km(s.dist)})</small><br><br>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank" rel="noopener" 
+           style="background:#06396f;color:#fff;padding:6px 10px;border-radius:12px;text-decoration:none;font-size:12px;display:inline-block">Route starten ➔</a>
+      </div>`;
+
+    m.bindPopup(popupContent);
+    m.on('click', () => { selectStation(s.id, true); });
+
+    s._marker = m;
+    markers.push(m);
+  });
+
+  if(list.length && updateMapBounds){
+    let group = L.featureGroup(markers);
+    map.fitBounds(group.getBounds().pad(.15), {maxZoom: 13});
+  }
+}
+
+let updateMapBounds = true;
+
+async function geocode(q){
+  let u = 'https://nominatim.openstreetmap.org/search?format=jsonv2&country=Germany&limit=1&q=' + encodeURIComponent(q);
+  let r = await fetch(u);
+  if(!r.ok) throw Error('Ortssuche vorübergehend nicht verfügbar.');
+  let j = await r.json();
+  if(!j[0]) throw Error('Ort oder Postleitzahl nicht gefunden.');
+  return {lat: +j[0].lat, lon: +j[0].lon, label: q};
+}
+
+async function search(){
+  let b = $('searchBtn');
+  b.disabled = true;
+  b.textContent = 'Suche läuft …';
+  try {
+    let q = $('place').value.trim();
+    if(q && q !== origin.label) origin = await geocode(q);
+    
+    updateMapBounds = true;
+    currentStations = await fetchTankerkoenigData();
+    render(true);
+    
+    let nowStr = new Date().toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+    $('lastUpdated').textContent = `Live um ${nowStr} Uhr`;
+    $('footerTime').textContent = `Heute, ${nowStr} Uhr`;
+    toast('Live-Daten erfolgreich geladen.');
+  } catch(e) {
+    toast(e.message);
+  } finally {
+    b.disabled = false;
+    b.innerHTML = '<svg viewBox="0 0 32 32" fill="none"><circle cx="13.5" cy="13.5" r="9.5" stroke="currentColor" stroke-width="3.5"/><path d="m21 21 8 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>Suchen';
+  }
+}
+
+document.querySelectorAll('.fuel').forEach(b => b.addEventListener('click', () => {
+  fuel = b.dataset.fuel;
+  document.querySelectorAll('.fuel').forEach(x => x.classList.toggle('active', x === b));
+  updateMapBounds = false;
+  render(true);
+}));
+
+$('searchBtn').addEventListener('click', search);
+$('sort').addEventListener('change', () => { $('sortQuick').value = $('sort').value; render(false); });
+$('sortQuick').addEventListener('change', () => { $('sort').value = $('sortQuick').value; render(false); });
+$('radius').addEventListener('change', search);
+
+$('locBtn').addEventListener('click', () => {
+  if(!navigator.geolocation){ toast('Standort wird von diesem Browser nicht unterstützt.'); return; }
+  navigator.geolocation.getCurrentPosition(p => {
+    origin = {lat: p.coords.latitude, lon: p.coords.longitude, label: 'Mein Standort'};
+    $('place').value = '';
+    map.setView([origin.lat, origin.lon], 12);
+    search();
+  }, () => toast('Standortzugriff nicht möglich. Bitte Browser-Berechtigung prüfen.'), {timeout: 10000, enableHighAccuracy: true});
+});
+
+$('mapMode').addEventListener('click', () => { $('mapMode').classList.add('active'); $('listMode').classList.remove('active'); $('karte').scrollIntoView({behavior:'smooth'}); });
+$('listMode').addEventListener('click', () => { $('listMode').classList.remove('active'); $('mapMode').classList.add('active'); $('liste').scrollIntoView({behavior:'smooth'}); });
+$('recenter').addEventListener('click', () => map.setView([origin.lat, origin.lon], 12));
+$('zoomIn').addEventListener('click', () => map.zoomIn());
+$('zoomOut').addEventListener('click', () => map.zoomOut());
+$('navMap').addEventListener('click', () => setTimeout(() => map.invalidateSize(), 250));
+
+// Untere Navigation: Interaktiver Farbwechsel (Weiß zu Gelb) für alle Icons
+document.querySelectorAll('.bottomnav .navitem').forEach(item => {
+  item.addEventListener('click', e => {
+    document.querySelectorAll('.bottomnav .navitem').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    
+    let nav = item.dataset.nav;
+    if(nav === 'start') { window.scrollTo({top:0, behavior:'smooth'}); }
+    else if(nav === 'karte') { $('karte').scrollIntoView({behavior:'smooth'}); setTimeout(() => map.invalidateSize(), 250); }
+    else if(nav === 'favorites') { toast('Favoriten-Funktion wird in Kürze ergänzt.'); }
+    else if(nav === 'settings') { $('settingsModal').classList.add('show'); }
+    else if(nav === 'info') { toast('Pfiffi’s SpritKompass · Live Tankerkönig & TomTom Maps.'); }
+  });
+});
+
+// Einstellungs-Modal Logik
+$('settingLimit').value = appSettings.maxListItems;
+$('saveSettings').addEventListener('click', () => {
+  appSettings.maxListItems = parseInt($('settingLimit').value, 10);
+  localStorage.setItem('pfiffi_limit', appSettings.maxListItems);
+  $('settingsModal').classList.remove('show');
+  render(false);
+  toast('Einstellungen erfolgreich gespeichert.');
+});
+
+$('settingsModal').addEventListener('click', e => {
+  if(e.target === $('settingsModal')) $('settingsModal').classList.remove('show');
+});
+
+if(window.L){
+  map = L.map('map', {zoomControl: false, scrollWheelZoom: true}).setView([origin.lat, origin.lon], 12);
+  
+  L.tileLayer(`https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key=${TOMTOM_KEY}`, {
+    maxZoom: 22,
+    attribution: '&copy; TomTom'
+  }).addTo(map);
+
+  layer = L.layerGroup().addTo(map);
+} else {
+  $('map').innerHTML = '<div class="empty">Karte benötigt eine Internetverbindung.</div>';
+}
+
+// Initialer Startaufruf
+search();
+
+// PWA installation
+let installPrompt = null;
+const installButton = $('installApp');
+function showInstallButton(){ if(installButton) installButton.classList.add('visible'); }
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; showInstallButton(); });
+window.addEventListener('appinstalled', () => { installPrompt = null; if(installButton){ installButton.textContent = '✓ App installiert'; installButton.classList.add('visible'); installButton.disabled = true; } });
+
+if(installButton){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if(isIOS && !isStandalone){ showInstallButton(); installButton.textContent = '＋ Zum Home-Bildschirm'; }
+  installButton.addEventListener('click', async () => {
+    if(installPrompt){
+      installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      installPrompt = null;
+      if(choice && choice.outcome === 'accepted'){ installButton.textContent = '✓ Installation gestartet'; } else { installButton.textContent = '⬇ App installieren'; }
+      return;
+    }
+    if(isIOS){ toast('Zum Installieren: Safari öffnen, Teilen antippen und „Zum Home-Bildschirm“ wählen.'); return; }
+    if(location.protocol === 'file:'){ toast('Installation ist nicht über eine lokale Datei möglich.'); return; }
+    toast('Nutze das Installationssymbol in der Adressleiste deines Browsers.');
+  });
+}
+
+if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service Worker Fehler:', err)));
+}
+})();
+</script>
+</body>
+</html>
+```[cite: 18]
