@@ -17,53 +17,81 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
 :root{--navy:#06396f;--navy2:#0b4b89;--blue:#1688d4;--sky:#dff1ff;--yellow:#ffda19;--green:#078d3a;--text:#103d70;--muted:#4773a0;--line:#d5e6f7;--paper:#fff;--bg:#eaf6ff;--shadow:0 7px 20px #164e8020}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#d9efff 0,#f5fbff 52%,#e5f4ff 100%);font-family:'Nunito Sans',Arial,sans-serif;color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1600px;margin:0 auto;min-height:100vh;padding:0 0 84px}.hero{display:block;width:100%;height:auto;min-height:0;overflow:visible;background:#bce6ff;line-height:0}.hero img{display:block!important;visibility:visible;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.installbtn{display:none;border:0;border-radius:999px;background:#ffda19;color:#06396f;font:800 14px 'Barlow Condensed',sans-serif;padding:9px 13px;white-space:nowrap;box-shadow:0 2px 7px #06396f20}.installbtn.visible{display:inline-flex;align-items:center;gap:7px}.main{padding:0 clamp(12px,3.3vw,42px)}
-.fuelbar{position:relative;margin:-1px 0 13px;padding:12px 14px;background:#ffffffed;border:1px solid #ffffff;border-radius:0 0 28px 28px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.fuel{border:0;border-radius:999px;padding:14px 16px;min-height:70px;display:flex;align-items:center;justify-content:center;gap:12px;color:var(--navy);background:linear-gradient(110deg,#eff7fd,#e7f1fa);font-family:'Barlow Condensed',sans-serif;font-size:clamp(19px,2.2vw,29px);font-weight:700;transition:transform .16s,background .16s;box-shadow:inset 0 1px 0 #fff}.fuel:hover{transform:translateY(-2px)}.fuel.active{background:linear-gradient(135deg,#06396f,#0c4f90);color:white;box-shadow:0 5px 12px #06396f30}.pumpicon{width:34px;height:39px;flex:0 0 auto}.fuel.active .pumpicon{color:#fff}
-.searchbox{background:#fff;border:1px solid white;border-radius:26px;padding:13px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(220px,1.45fr) minmax(145px,.8fr) minmax(150px,.8fr) auto;gap:12px;align-items:stretch;margin-bottom:14px}.control{border:1px solid #d5e5f5;border-radius:21px;min-height:66px;display:flex;align-items:center;gap:12px;padding:9px 14px;min-width:0}.control .ico{width:32px;height:36px;color:var(--navy);flex:0 0 auto}.control label{display:block;font:700 16px/1.15 'Barlow Condensed',sans-serif;color:var(--navy)}.control input,.control select{width:100%;border:0;outline:0;color:var(--text);background:transparent;min-width:0;font-size:14px;padding:4px 0}.control select{font-weight:800;font-family:'Barlow Condensed',sans-serif;font-size:18px}.searchbtn{border:0;border-radius:999px;background:linear-gradient(135deg,#ffdf23,#ffd000);color:var(--navy);padding:0 25px;min-width:155px;font:800 24px 'Barlow Condensed',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 #fff9;transition:filter .15s,transform .15s}.searchbtn:hover{filter:saturate(1.15);transform:translateY(-1px)}.searchbtn svg{width:30px;height:30px}
-.statusbar{display:flex;align-items:center;gap:12px;background:#d7ecffcc;border-radius:20px;padding:10px 16px;margin:0 4px 12px;color:var(--navy);font-size:12px}.statusbar strong{font-size:15px}.statusicon{width:34px;height:34px;flex:0 0 auto}.statuscopy{flex:1}.statuscopy small{display:block}
-.content{display:flex;flex-direction:column;gap:16px;align-items:stretch}.listpanel,.mappanel{background:#ffffffeb;border:1px solid white;border-radius:26px;box-shadow:var(--shadow);overflow:hidden}.panelhead{display:flex;align-items:center;gap:10px;padding:14px 15px 10px}.panelhead h2{margin:0;font:800 23px 'Barlow Condensed',sans-serif;letter-spacing:-.25px;flex:1}.headicon{width:30px;height:30px;flex:0 0 auto;color:var(--navy)}.sortselect{max-width:185px;background:#f0f6fc;border:0;border-radius:999px;color:var(--navy);padding:9px 12px;font-size:12px;outline:0}.stationlist{display:grid;gap:6px;padding:0 10px 10px}
-.station{border:1px solid #d5e5f5;border-radius:14px;background:linear-gradient(110deg,#fff,#fbfdff);padding:8px 12px;display:grid;grid-template-columns:68px minmax(0,1fr) 96px;gap:8px;align-items:center;transition:box-shadow .15s,border .15s;cursor:pointer}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#d9efff 0,#f5fbff 52%,#e5f4ff 100%);font-family:'Nunito Sans',Arial,sans-serif;color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1600px;margin:0 auto;min-height:100vh;padding:0 0 84px}.hero{display:block;width:100%;height:auto;min-height:0;overflow:visible;background:#bce6ff;line-height:0}.hero img{display:block!important;visibility:visible;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.installbtn{display:none;border:0;border-radius:999px;background:#ffda19;color:#06396f;font:800 12px 'Barlow Condensed',sans-serif;padding:6px 10px;white-space:nowrap;box-shadow:0 2px 7px #06396f20}.installbtn.visible{display:inline-flex;align-items:center;gap:5px}.main{padding:0 clamp(8px,2.5vw,32px)}
+
+/* Kompaktere Kraftstoff-Leiste */
+.fuelbar{position:relative;margin:-1px 0 8px;padding:8px 10px;background:#ffffffed;border:1px solid #ffffff;border-radius:0 0 20px 20px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fuel{border:0;border-radius:999px;padding:8px 10px;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--navy);background:linear-gradient(110deg,#eff7fd,#e7f1fa);font-family:'Barlow Condensed',sans-serif;font-size:clamp(16px,1.8vw,22px);font-weight:700;transition:transform .16s,background .16s;box-shadow:inset 0 1px 0 #fff}
+.fuel:hover{transform:translateY(-1px)}.fuel.active{background:linear-gradient(135deg,#06396f,#0c4f90);color:white;box-shadow:0 4px 10px #06396f30}
+.pumpicon{width:24px;height:28px;flex:0 0 auto}.fuel.active .pumpicon{color:#fff}
+
+/* Kompaktere Suche (ohne Sortieren-Feld) */
+.searchbox{background:#fff;border:1px solid white;border-radius:20px;padding:10px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(130px,.8fr) auto;gap:8px;align-items:stretch;margin-bottom:10px}
+.control{border:1px solid #d5e5f5;border-radius:16px;min-height:50px;display:flex;align-items:center;gap:10px;padding:6px 12px;min-width:0}
+.control .ico{width:24px;height:28px;color:var(--navy);flex:0 0 auto}
+.control label{display:block;font:700 13px/1.1 'Barlow Condensed',sans-serif;color:var(--navy)}
+.control input,.control select{width:100%;border:0;outline:0;color:var(--text);background:transparent;min-width:0;font-size:13px;padding:2px 0}
+.control select{font-weight:800;font-family:'Barlow Condensed',sans-serif;font-size:15px}
+.searchbtn{border:0;border-radius:999px;background:linear-gradient(135deg,#ffdf23,#ffd000);color:var(--navy);padding:0 20px;min-width:120px;font:800 18px 'Barlow Condensed',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 1px 0 #fff9;transition:filter .15s,transform .15s}
+.searchbtn:hover{filter:saturate(1.15);transform:translateY(-1px)}.searchbtn svg{width:22px;height:22px}
+
+/* Statusbar exakt in 2 Zeilen strukturiert */
+.statusbar{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;row-gap:2px;background:#d7ecffcc;border-radius:16px;padding:8px 14px;margin:0 4px 10px;color:var(--navy);font-size:11px;align-items:center}
+.statusbar .statusicon{grid-row:1 / 3;width:28px;height:28px;color:var(--navy)}
+.statusbar .statuscopy{grid-column:2;grid-row:1;display:flex;justify-content:space-between;align-items:center}
+.statusbar .statuscopy small{font-size:11px;color:#32669b}
+.statusbar .statuscopy strong{font-size:12px}
+.statusbar .disclaimer{grid-column:2;grid-row:2;font-size:11px;color:#32669b;display:flex;justify-content:space-between;align-items:center}
+.installbtn{font-size:11px;padding:3px 8px}
+
+.content{display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.listpanel,.mappanel{background:#ffffffeb;border:1px solid white;border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.panelhead{display:flex;align-items:center;gap:8px;padding:12px 14px 8px}
+.panelhead h2{margin:0;font:800 20px 'Barlow Condensed',sans-serif;letter-spacing:-.25px;flex:1}
+.headicon{width:26px;height:26px;flex:0 0 auto;color:var(--navy)}
+.sortselect{max-width:170px;background:#f0f6fc;border:0;border-radius:999px;color:var(--navy);padding:8px 10px;font-size:11px;outline:0;font-weight:700}
+.stationlist{display:grid;gap:6px;padding:0 8px 8px}
+.station{border:1px solid #d5e5f5;border-radius:12px;background:linear-gradient(110deg,#fff,#fbfdff);padding:7px 10px;display:grid;grid-template-columns:60px minmax(0,1fr) 90px;gap:8px;align-items:center;transition:box-shadow .15s,border .15s;cursor:pointer}
 .station:hover,.station.selected{border-color:#078d3a;box-shadow:0 0 0 3px rgba(7,141,58,0.25);background:#f3faf5}
 
-/* Logos */
-.brandlogo{width:62px;height:62px;border-radius:12px;display:grid;place-items:center;background:#f5fbff;overflow:hidden;font-family:'Barlow Condensed',sans-serif;font-weight:900;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);position:relative}
-.logo-aral{background:#003399;color:#fff;font-size:16px;letter-spacing:-0.5px}
-.logo-shell{background:#fbce07;color:#dd1d21;font-size:22px}
-.logo-hem{background:#e30613;color:#fff;font-size:15px}
-.logo-jet{background:#003399;color:#ffcc00;font-size:18px;font-style:italic}
-.logo-total{background:#fd6b00;color:#fff;font-size:13px;text-align:center;line-height:1.1}
-.logo-avia{background:#e31b23;color:#fff;font-size:15px}
-.logo-star{background:#ffe500;color:#e30613;font-size:15px}
-.logo-bft{background:#ff7616;color:#101010;font-size:16px;font-style:italic}
-.logo-hoyer{background:#00539f;color:#ffed00;font-size:15px}
-.logo-m1{background:#222;color:#ffcc00;font-size:18px}
-.fav-badge{position:absolute;top:2px;right:2px;font-size:13px;background:#fff;border-radius:50%;width:18px;height:18px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+/* Logos & Favoriten-Badge */
+.brandlogo{width:56px;height:56px;border-radius:10px;display:grid;place-items:center;background:#f5fbff;overflow:hidden;font-family:'Barlow Condensed',sans-serif;font-weight:900;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);position:relative}
+.logo-aral{background:#003399;color:#fff;font-size:15px;letter-spacing:-0.5px}
+.logo-shell{background:#fbce07;color:#dd1d21;font-size:20px}
+.logo-hem{background:#e30613;color:#fff;font-size:14px}
+.logo-jet{background:#003399;color:#ffcc00;font-size:16px;font-style:italic}
+.logo-total{background:#fd6b00;color:#fff;font-size:12px;text-align:center;line-height:1.1}
+.logo-avia{background:#e31b23;color:#fff;font-size:14px}
+.logo-star{background:#ffe500;color:#e30613;font-size:14px}
+.logo-bft{background:#ff7616;color:#101010;font-size:15px;font-style:italic}
+.logo-hoyer{background:#00539f;color:#ffed00;font-size:14px}
+.logo-m1{background:#222;color:#ffcc00;font-size:16px}
+.fav-badge{position:absolute;top:2px;right:2px;font-size:11px;background:#fff;border-radius:50%;width:16px;height:16px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,0.2);color:#ffb700}
 
-.stationmain{min-width:0}.stationname{font:700 16px/1.2 'Barlow Condensed',sans-serif;margin:0 0 2px;color:var(--navy)}
-.price{color:var(--green);font:800 28px/1 'Barlow Condensed',sans-serif;white-space:nowrap;letter-spacing:-.5px}.price small{font-size:15px;font-weight:600}
-.cheapest{display:inline-flex;align-items:center;gap:4px;background:#078d3a;color:#fff;border-radius:99px;padding:3px 7px;font-size:10px;font-weight:400;margin-left:4px;vertical-align:middle}
-.stationmeta{display:grid;gap:2px;margin-top:4px;font-size:11px;color:#32669b}
-.metarow{display:flex;gap:6px;align-items:center;min-width:0}.metarow svg{width:13px;height:13px;flex:0 0 auto}.metarow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.stationactions{display:flex;flex-direction:column;gap:6px;align-items:stretch}.favbtn{background:none;border:0;color:#ffb700;font-size:18px;cursor:pointer;text-align:right;padding:0}.routebtn{border:0;border-radius:999px;background:linear-gradient(135deg,#06396f,#0d4c8b);color:#fff;font:700 14px 'Barlow Condensed',sans-serif;padding:7px 10px;display:flex;justify-content:center;align-items:center;gap:5px;white-space:nowrap}.routebtn svg{width:15px;height:15px}
+.stationmain{min-width:0}.stationname{font:700 15px/1.2 'Barlow Condensed',sans-serif;margin:0 0 1px;color:var(--navy)}
+.price{color:var(--green);font:800 26px/1 'Barlow Condensed',sans-serif;white-space:nowrap;letter-spacing:-.5px}.price small{font-size:14px;font-weight:600}
+.cheapest{display:inline-flex;align-items:center;gap:3px;background:#078d3a;color:#fff;border-radius:99px;padding:2px 6px;font-size:9px;font-weight:400;margin-left:4px;vertical-align:middle}
+.stationmeta{display:grid;gap:1px;margin-top:3px;font-size:11px;color:#32669b}
+.metarow{display:flex;gap:5px;align-items:center;min-width:0}.metarow svg{width:12px;height:12px;flex:0 0 auto}.metarow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stationactions{display:flex;flex-direction:column;gap:5px;align-items:stretch}.favbtn{background:none;border:0;color:#ffb700;font-size:18px;cursor:pointer;text-align:right;padding:0}.routebtn{border:0;border-radius:999px;background:linear-gradient(135deg,#06396f,#0d4c8b);color:#fff;font:700 13px 'Barlow Condensed',sans-serif;padding:6px 8px;display:flex;justify-content:center;align-items:center;gap:4px;white-space:nowrap}.routebtn svg{width:14px;height:14px}
 
-.mappanel{position:relative}.maphead{display:flex;justify-content:space-between;align-items:center;padding:13px 14px 8px}.maphead h2{margin:0;font:800 22px 'Barlow Condensed',sans-serif}.mapmodes{display:flex;align-items:center;gap:3px;background:#fff;border:1px solid #dce9f6;border-radius:999px;padding:4px;box-shadow:0 3px 9px #164e8015}.mapmodes button{border:0;border-radius:999px;padding:8px 12px;background:transparent;color:var(--navy);font:700 14px 'Barlow Condensed',sans-serif}.mapmodes button.active{background:var(--navy);color:#fff}.mapmodes span{color:#c0d4e7}.mapwrap{position:relative;margin:0 7px 7px;border:4px solid white;border-radius:22px;overflow:hidden;background:#cde8b7}.map{height:520px;width:100%;background:#d7eec6}.mapbadge{position:absolute;z-index:500;right:12px;bottom:14px;display:grid;gap:6px}.mapbadge button{border:0;background:#fff;border-radius:10px;box-shadow:0 2px 8px #173e2c25;width:42px;height:42px;color:var(--navy);font-size:25px}.mapnote{font-size:11px;color:#50739a;padding:0 14px 10px}
+.mappanel{position:relative}.maphead{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px}.maphead h2{margin:0;font:800 20px 'Barlow Condensed',sans-serif}.mapmodes{display:flex;align-items:center;gap:3px;background:#fff;border:1px solid #dce9f6;border-radius:999px;padding:3px;box-shadow:0 3px 9px #164e8015}.mapmodes button{border:0;border-radius:999px;padding:7px 10px;background:transparent;color:var(--navy);font:700 13px 'Barlow Condensed',sans-serif}.mapmodes button.active{background:var(--navy);color:#fff}.mapmodes span{color:#c0d4e7}.mapwrap{position:relative;margin:0 6px 6px;border:3px solid white;border-radius:18px;overflow:hidden;background:#cde8b7}.map{height:420px;width:100%;background:#d7eec6}.mapbadge{position:absolute;z-index:500;right:10px;bottom:12px;display:grid;gap:5px}.mapbadge button{border:0;background:#fff;border-radius:8px;box-shadow:0 2px 8px #173e2c25;width:38px;height:38px;color:var(--navy);font-size:22px}.mapnote{font-size:11px;color:#50739a;padding:0 12px 8px}
 
-/* Karten-Pins */
 .custom-price-pin {
   background: #ffffff;
   color: #103d70;
   border: 2px solid #06396f;
-  border-radius: 10px;
-  padding: 3px 7px;
+  border-radius: 9px;
+  padding: 2px 6px;
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   white-space: nowrap;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   transform: translate(-50%, -100%);
   transition: transform 0.15s ease, background 0.15s ease;
 }
@@ -80,31 +108,31 @@
   border-color: #055f26;
 }
 
-.footerinfo{margin:10px 3px 0;border-radius:20px;background:#d8ecffdc;padding:10px 16px;display:flex;align-items:center;gap:12px;color:var(--navy);font-size:12px}.footerinfo .clock{width:34px;height:34px;flex:0 0 auto}.footerinfo strong{font-size:17px;display:block}.footsep{height:34px;width:1px;background:#5c9bce;margin:0 8px}.footerinfo .disclaimer{flex:1}
+.footerinfo{margin:8px 2px 0;border-radius:16px;background:#d8ecffdc;padding:8px 14px;display:flex;align-items:center;gap:10px;color:var(--navy);font-size:11px}.footerinfo .clock{width:28px;height:28px;flex:0 0 auto}.footerinfo strong{font-size:14px;display:block}.footsep{height:28px;width:1px;background:#5c9bce;margin:0 6px}.footerinfo .disclaimer{flex:1}
 
 /* Untere Navigation */
-.bottomnav{position:fixed;z-index:1000;bottom:0;left:0;right:0;background:linear-gradient(110deg,#06396f,#07335f);color:#fff;display:flex;justify-content:center;gap:0;padding:10px max(8px,calc((100vw - 1200px)/2)) calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 15px #06396f24;border-top:3px solid #ffda19}
-.navitem{flex:1;max-width:210px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;color:white;text-decoration:none;border:0;background:transparent;font:600 14px 'Barlow Condensed',sans-serif;padding:2px;cursor:pointer;transition:color .15s}
-.navitem svg{width:27px;height:27px;fill:currentColor}
+.bottomnav{position:fixed;z-index:1000;bottom:0;left:0;right:0;background:linear-gradient(110deg,#06396f,#07335f);color:#fff;display:flex;justify-content:center;gap:0;padding:8px max(8px,calc((100vw - 1200px)/2)) calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 15px #06396f24;border-top:3px solid #ffda19}
+.navitem{flex:1;max-width:210px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;color:white;text-decoration:none;border:0;background:transparent;font:600 13px 'Barlow Condensed',sans-serif;padding:2px;cursor:pointer;transition:color .15s}
+.navitem svg{width:24px;height:24px;fill:currentColor}
 .navitem.active{color:var(--yellow)}
 
-/* Modal / Detail-Dialog */
+/* Modals */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;display:none;align-items:center;justify-content:center}
 .modal-backdrop.show{display:flex}
-.modal{background:#fff;padding:24px;border-radius:20px;width:90%;max-width:440px;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
-.modal h3{margin-top:0;font-family:'Barlow Condensed',sans-serif;font-size:24px;display:flex;justify-content:space-between;align-items:center}
-.modal label{display:block;font-weight:700;margin:14px 0 6px;font-size:14px}
-.modal select,.modal input{width:100%;padding:10px;border:1px solid #d5e5f5;border-radius:10px;font-size:14px;background:#f5fbff}
-.modal-close{margin-top:20px;width:100%;background:var(--navy);color:#fff;border:0;padding:12px;border-radius:99px;font:800 16px 'Barlow Condensed',sans-serif;cursor:pointer}
-.detail-prices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-.detail-price-box{background:#f0f6fc;border-radius:12px;padding:10px;text-align:center}
+.modal{background:#fff;padding:22px;border-radius:18px;width:90%;max-width:420px;box-shadow:0 10px 30px rgba(0,0,0,0.3);color:var(--navy)}
+.modal h3{margin-top:0;font-family:'Barlow Condensed',sans-serif;font-size:22px;display:flex;justify-content:space-between;align-items:center}
+.modal label{display:block;font-weight:700;margin:12px 0 5px;font-size:13px}
+.modal select,.modal input{width:100%;padding:9px;border:1px solid #d5e5f5;border-radius:10px;font-size:13px;background:#f5fbff}
+.modal-close{margin-top:18px;width:100%;background:var(--navy);color:#fff;border:0;padding:11px;border-radius:99px;font:800 15px 'Barlow Condensed',sans-serif;cursor:pointer}
+.detail-prices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.detail-price-box{background:#f0f6fc;border-radius:10px;padding:8px;text-align:center}
 .detail-price-box small{display:block;color:var(--muted);font-weight:700;font-size:11px}
-.detail-price-box span{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--green)}
+.detail-price-box span{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--green)}
 
-.empty{padding:28px;text-align:center;color:var(--muted)}.toast{position:fixed;z-index:4000;left:50%;bottom:92px;transform:translateX(-50%);max-width:90vw;padding:12px 18px;border-radius:12px;background:#103d70;color:#fff;box-shadow:var(--shadow);display:none;font-size:13px}.toast.show{display:block}
+.empty{padding:24px;text-align:center;color:var(--muted)}.toast{position:fixed;z-index:4000;left:50%;bottom:86px;transform:translateX(-50%);max-width:90vw;padding:10px 16px;border-radius:10px;background:#103d70;color:#fff;box-shadow:var(--shadow);display:none;font-size:12px}.toast.show{display:block}
 
-@media(max-width:900px){.searchbox{grid-template-columns:minmax(0,1.2fr) minmax(125px,.7fr) auto}.control.place{grid-column:1/2}.searchbtn{min-width:125px;padding:0 16px}.map{height:380px}}
-@media(max-width:580px){.app{padding-bottom:82px}.hero{display:block!important;width:100%!important;height:auto!important;min-height:0!important;overflow:visible!important}.hero img{display:block!important;visibility:visible!important;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.main{padding:0 9px}.fuelbar{padding:8px;gap:6px;border-radius:0 0 20px 20px;margin-bottom:9px}.fuel{min-height:55px;padding:8px 4px;gap:5px;font-size:18px}.pumpicon{width:25px;height:29px}.searchbox{grid-template-columns:minmax(0,1fr) 110px;gap:7px;padding:9px;border-radius:20px;margin-bottom:9px}.control{min-height:58px;border-radius:16px;padding:7px 9px;gap:7px}.control.place{grid-column:1/-1}.control .ico{width:26px;height:29px}.control label{font-size:14px}.control input{font-size:13px}.control select{font-size:16px}.searchbtn{min-height:58px;min-width:0;grid-column:1/-1;font-size:21px}.statusbar{margin:0 0 8px;padding:8px 10px}.content{gap:9px}.listpanel,.mappanel{border-radius:20px}.panelhead{padding:11px 11px 8px;flex-wrap:wrap}.panelhead h2{font-size:21px}.headicon{width:25px}.sortselect{max-width:145px;padding:8px;font-size:11px}.stationlist{padding:0 7px 8px;gap:6px}.station{grid-template-columns:52px minmax(0,1fr) 72px;gap:6px;padding:7px 9px;border-radius:12px}.brandlogo{width:48px;height:48px;border-radius:10px}.stationname{font-size:14px}.price{font-size:22px}.price small{font-size:12px}.cheapest{font-size:8px;padding:2px 5px;margin-left:2px}.stationmeta{font-size:10px;margin-top:3px;gap:1px}.metarow svg{width:11px;height:11px}.stationactions{gap:4px}.arrow{font-size:16px}.routebtn{font-size:12px;padding:6px 4px}.routebtn svg{width:13px;height:13px}.maphead{padding:10px 10px 6px}.maphead h2{font-size:20px}.mapmodes button{font-size:13px;padding:7px 9px}.map{height:320px}.footerinfo{margin:8px 0 0;padding:9px 10px;gap:8px;font-size:10px}.footerinfo .clock{width:27px;height:27px}.footerinfo strong{font-size:14px}.footsep{margin:0 2px;height:30px}.navitem{font-size:12px}.navitem svg{width:24px;height:24px}}
+@media(max-width:900px){.searchbox{grid-template-columns:minmax(0,1.2fr) minmax(110px,.7fr) auto}.control.place{grid-column:1/2}.searchbtn{min-width:110px;padding:0 14px}.map{height:340px}}
+@media(max-width:580px){.app{padding-bottom:76px}.hero{display:block!important;width:100%!important;height:auto!important;min-height:0!important;overflow:visible!important}.hero img{display:block!important;visibility:visible!important;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;object-fit:contain!important;object-position:center top}.main{padding:0 6px}.fuelbar{padding:6px;gap:6px;border-radius:0 0 16px 16px;margin-bottom:6px}.fuel{min-height:42px;padding:6px 2px;gap:4px;font-size:16px}.pumpicon{width:20px;height:24px}.searchbox{grid-template-columns:minmax(0,1fr) 100px;gap:6px;padding:8px;border-radius:16px;margin-bottom:8px}.control{min-height:46px;border-radius:12px;padding:5px 8px;gap:6px}.control.place{grid-column:1/-1}.control .ico{width:20px;height:24px}.control label{font-size:12px}.control input{font-size:12px}.control select{font-size:14px}.searchbtn{min-height:46px;min-width:0;grid-column:1/-1;font-size:18px}.statusbar{margin:0 0 6px;padding:6px 10px}.content{gap:10px}.listpanel,.mappanel{border-radius:18px}.panelhead{padding:10px 10px 6px;flex-wrap:wrap}.panelhead h2{font-size:18px}.headicon{width:22px}.sortselect{max-width:130px;padding:6px;font-size:10px}.stationlist{padding:0 6px 6px;gap:5px}.station{grid-template-columns:46px minmax(0,1fr) 68px;gap:5px;padding:6px 8px;border-radius:10px}.brandlogo{width:42px;height:42px;border-radius:8px}.stationname{font-size:13px}.price{font-size:19px}.price small{font-size:11px}.cheapest{font-size:8px;padding:2px 4px;margin-left:2px}.stationmeta{font-size:9px;margin-top:2px;gap:1px}.metarow svg{width:10px;height:10px}.stationactions{gap:3px}.routebtn{font-size:11px;padding:5px 4px}.routebtn svg{width:11px;height:11px}.maphead{padding:8px 8px 5px}.maphead h2{font-size:17px}.mapmodes button{font-size:11px;padding:5px 8px}.map{height:280px}.footerinfo{margin:6px 0 0;padding:8px;gap:6px;font-size:10px}.footerinfo .clock{width:24px;height:24px}.footerinfo strong{font-size:12px}.footsep{margin:0 2px;height:24px}.navitem{font-size:11px}.navitem svg{width:22px;height:22px}}
 </style>
 </head>
 <body>
@@ -116,13 +144,20 @@
       <button class="fuel" data-fuel="e5"><svg class="pumpicon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M7 4h20a3 3 0 0 1 3 3v32H7z" fill="currentColor"/><path d="M11 8h12v11H11z" fill="#dceeff"/><path d="M30 11h4l3 5v15a4 4 0 0 1-8 0V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 14l4 4" stroke="currentColor" stroke-width="3"/></svg>Super E5</button>
       <button class="fuel" data-fuel="e10"><svg class="pumpicon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M7 4h20a3 3 0 0 1 3 3v32H7z" fill="currentColor"/><path d="M11 8h12v11H11z" fill="#dceeff"/><path d="M30 11h4l3 5v15a4 4 0 0 1-8 0V21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M31 14l4 4" stroke="currentColor" stroke-width="3"/></svg>Super E10</button>
     </section>
+
+    <!-- Suche ohne Sortieren-Feld -->
     <section class="searchbox" aria-label="Tankstellensuche">
-      <div class="control place"><svg class="ico" viewBox="0 0 32 38" fill="currentColor" aria-hidden="true"><path d="M16 1C7.7 1 1 7.7 1 16c0 10.2 15 21 15 21s15-10.8 15-21C31 7.7 24.3 1 16 1zm0 20a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg><div style="flex:1;min-width:0"><label for="place">Standort</label><input id="place" value="Blankenburg (Harz)" placeholder="Ort oder Postleitzahl" aria-label="Ort oder Postleitzahl"></div><button id="locBtn" title="Meinen Standort verwenden" aria-label="Meinen Standort verwenden" style="border:0;background:none;color:var(--navy);font-size:22px">⌖</button></div>
+      <div class="control place"><svg class="ico" viewBox="0 0 32 38" fill="currentColor" aria-hidden="true"><path d="M16 1C7.7 1 1 7.7 1 16c0 10.2 15 21 15 21s15-10.8 15-21C31 7.7 24.3 1 16 1zm0 20a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg><div style="flex:1;min-width:0"><label for="place">Standort</label><input id="place" value="Blankenburg (Harz)" placeholder="Ort oder PLZ" aria-label="Ort oder PLZ"></div><button id="locBtn" title="Meinen Standort verwenden" aria-label="Standort" style="border:0;background:none;color:var(--navy);font-size:20px">⌖</button></div>
       <div class="control"><svg class="ico" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="3"/><circle cx="18" cy="18" r="5" stroke="currentColor" stroke-width="3"/><path d="M18 1v6M18 29v6M1 18h6M29 18h6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><div style="flex:1;min-width:0"><label for="radius">Umkreis</label><select id="radius"><option value="5">5 km</option><option value="10">10 km</option><option value="15">15 km</option><option value="20" selected>20 km</option><option value="25">25 km</option></select></div></div>
-      <div class="control"><div style="flex:1;min-width:0"><label for="sort">Sortieren</label><select id="sort"><option value="price">Preis (aufsteigend)</option><option value="distance">Entfernung</option></select></div></div>
       <button class="searchbtn" id="searchBtn"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="13.5" cy="13.5" r="9.5" stroke="currentColor" stroke-width="3.5"/><path d="m21 21 8 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>Suchen</button>
     </section>
-    <div class="statusbar"><svg class="statusicon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="3.5"/><path d="M18 8v10l7 4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg><div class="statuscopy"><small>Letzte Aktualisierung der Preisdaten</small><strong id="lastUpdated">Live via Tankerkönig API</strong></div><div class="footsep"></div><button class="installbtn" id="installApp" type="button">⬇ App installieren</button><div class="disclaimer">ⓘ Preise direkt von MTS-K / Tankerkönig.</div></div>
+
+    <!-- Statusbar exakt in 2 Zeilen -->
+    <div class="statusbar">
+      <svg class="statusicon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="3.5"/><path d="M18 8v10l7 4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>
+      <div class="statuscopy"><small>Letzte Aktualisierung</small><strong id="lastUpdated">Live via API</strong></div>
+      <div class="disclaimer"><span>ⓘ Preise direkt von Tankerkönig</span><button class="installbtn" id="installApp" type="button">⬇ Installieren</button></div>
+    </div>
     
     <section class="content">
       <!-- 1. Tankstellenpreise (oben) -->
@@ -199,9 +234,7 @@
 
 <!-- Tankstellen-Detail Modal -->
 <div class="modal-backdrop" id="detailModal">
-  <div class="modal" id="detailModalContent">
-    <!-- Wird dynamisch gefüllt -->
-  </div>
+  <div class="modal" id="detailModalContent"></div>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
@@ -294,7 +327,7 @@ async function fetchTankerkoenigData(){
 
 function processAndSortStations(stations){
   let sorted = [...stations];
-  let sortVal = $('sort').value;
+  let sortVal = $('sortQuick').value;
   
   if(sortVal === 'price'){
     sorted.sort((a,b)=>{
@@ -370,7 +403,6 @@ function showStationDetails(s) {
 
 function render(updateMap = true){
   let list = processAndSortStations(currentStations);
-  if($('sortQuick').value !== $('sort').value) $('sortQuick').value = $('sort').value;
 
   if(showOnlyFavorites) {
     list = list.filter(s => favorites.includes(s.id));
@@ -410,7 +442,6 @@ function render(updateMap = true){
       </article>`;
   }).join('') : `<div class="empty">${showOnlyFavorites ? 'Keine Favoriten gespeichert. Klicke bei einer Tankstelle auf das Herz-Symbol.' : 'Keine Tankstellen in diesem Radius gefunden.'}</div>`;
 
-  // Klick auf Tankstellenzelle öffnet nun den Detail-Dialog
   $('stationList').querySelectorAll('.station').forEach(el=>{
     let s = list.find(x => x.id === el.dataset.id);
     el.addEventListener('click', e => {
@@ -532,8 +563,7 @@ document.querySelectorAll('.fuel').forEach(b => b.addEventListener('click', () =
 }));
 
 $('searchBtn').addEventListener('click', search);
-$('sort').addEventListener('change', () => { $('sortQuick').value = $('sort').value; render(false); });
-$('sortQuick').addEventListener('change', () => { $('sort').value = $('sortQuick').value; render(false); });
+$('sortQuick').addEventListener('change', () => { render(false); });
 $('radius').addEventListener('change', search);
 
 $('locBtn').addEventListener('click', () => {
@@ -543,7 +573,7 @@ $('locBtn').addEventListener('click', () => {
     $('place').value = '';
     map.setView([origin.lat, origin.lon], 12);
     search();
-  }, () => toast('Standortzugriff nicht möglich. Bitte Browser-Berechtigung prüfen.'), {timeout: 10000, enableHighAccuracy: true});
+  }, () => toast('Standortzugriff nicht möglich.'), {timeout: 10000, enableHighAccuracy: true});
 });
 
 $('mapMode').addEventListener('click', () => { $('mapMode').classList.add('active'); $('listMode').classList.remove('active'); $('karte').scrollIntoView({behavior:'smooth'}); });
@@ -608,7 +638,7 @@ $('saveSettings').addEventListener('click', () => {
 
   $('settingsModal').classList.remove('show');
   search();
-  toast('Einstellungen gespeichert & aktualisiert.');
+  toast('Einstellungen gespeichert.');
 });
 
 $('settingsModal').addEventListener('click', e => {
@@ -638,7 +668,7 @@ let installPrompt = null;
 const installButton = $('installApp');
 function showInstallButton(){ if(installButton) installButton.classList.add('visible'); }
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; showInstallButton(); });
-window.addEventListener('appinstalled', () => { installPrompt = null; if(installButton){ installButton.textContent = '✓ App installiert'; installButton.classList.add('visible'); installButton.disabled = true; } });
+window.addEventListener('appinstalled', () => { installPrompt = null; if(installButton){ installButton.textContent = '✓ Installiert'; installButton.classList.add('visible'); installButton.disabled = true; } });
 
 if(installButton){
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
@@ -649,7 +679,7 @@ if(installButton){
       installPrompt.prompt();
       const choice = await installPrompt.userChoice;
       installPrompt = null;
-      if(choice && choice.outcome === 'accepted'){ installButton.textContent = '✓ Installation gestartet'; } else { installButton.textContent = '⬇ App installieren'; }
+      if(choice && choice.outcome === 'accepted'){ installButton.textContent = '✓ Gestartet'; } else { installButton.textContent = '⬇ Installieren'; }
       return;
     }
     if(isIOS){ toast('Zum Installieren: Safari öffnen, Teilen antippen und „Zum Home-Bildschirm“ wählen.'); return; }
